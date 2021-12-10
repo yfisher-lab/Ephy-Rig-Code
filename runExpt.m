@@ -24,6 +24,8 @@ function runExpt(prefixCode,expNum,stimSetType)
 % The third input argument specifies the stimulus function/catagory you would like to
 % use as a string. ie (currentInjections);
 
+% Testing commit updates
+
 % open experimental settings
 ephysSettings;
 %% Get fly and experiment details from experimenter
