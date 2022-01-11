@@ -9,7 +9,7 @@
 %% Parameters
 
 % Data folder
-dataDirectory = ''; % E.g. '/Users/evettita/Google Drive/EphyData/'
+dataDirectory = 'C:\Users\fisherlab\Documents\EphyData\'; % 
 
 % Device
 settings.devID = 'Dev1'; %for NI PCIe-6351
@@ -31,12 +31,13 @@ settings.bob.aiType = 'SingleEnded'; % as opposed to 'differential' on the BOB, 
 settings.bob.inChannelsUsed  = [0:1]; %TODO update for output channels...
 
 
+PICOAMP_PER_NANOAMP = 1000; % 1000 pA/nA
 settings.current.amplifierGain = 0.5; % 0.5V/nA
 settings.current.softGain_pA = PICOAMP_PER_NANOAMP / settings.current.amplifierGain; %pAmp
 
-
+MiliVOLTS_PER_VOLT = 1000; % 1000 mV/V  
 settings.voltage.amplifierGain = 10; % 10mV/mV 
-settings.voltage.softGain_mV = MiliVOLTS_PER_VOLT / settings.membranePotentialGain; % mV
+settings.voltage.softGain_mV = MiliVOLTS_PER_VOLT / settings.voltage.amplifierGain; % mV
 
 % TODO add logic for current injection with analog output and scaling
 % factors

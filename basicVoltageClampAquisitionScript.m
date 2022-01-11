@@ -106,6 +106,8 @@ disp('Whole cell stats below: ignore if not in whole cell mode)')
 % solve for holding current
 holdingCurrent = mean(current_pA);
 
+% TODO add print statement of hold current in pAmps
+
 % set current to where average is zero
 currentZeroed = current_pA - holdingCurrent;
 
