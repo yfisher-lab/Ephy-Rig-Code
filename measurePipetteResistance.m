@@ -17,7 +17,7 @@ OUTPUT
 pipetteResistance (MOhms)
 
 %}
-[data,trialMeta] = acquireTrial; 
+[data,trialMeta] = acquireTrial(); 
 
 % logical array for when voltage is above the mean
 highVoltageLog1 = data.voltage > mean(data.voltage);
