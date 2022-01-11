@@ -28,9 +28,7 @@ function runExpt(prefixCode,expNum,stimSetType)
 % open experimental settings
 ephysSettings;
 %% Get fly and experiment details from experimenter
-disp(['Please confirm that Multiclamp 700b is set with' ...
-    'primary=membrane potential & secondary=membrane current'...
-    'in both V-Clamp & I-Clamp modes to ensure correct units in saved data!'])
+disp('Confirm that 700b is set for primary = membrane potential and secondary = ')
 newFly = input('New fly? ','s');
 newCell = input('New cell? ','s');
 [flyNum, cellNum, cellExpNum] = getFlyNum(prefixCode,expNum,newFly,newCell);
