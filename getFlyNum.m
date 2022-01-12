@@ -22,7 +22,7 @@ eNum = num2str(expNum,'%03d');
 ephysSettings;   % Loads settings, including personal dataDirectory
 
 % path to the experimental folder
-path = [dataDirectory,prefixCode,'\expNum',eNum];
+path = [settings.dataDirectory ,prefixCode,'\expNum',eNum];
 if ~isdir(path)
     mkdir(path)
 end
@@ -34,7 +34,7 @@ folderNameList = [folderContentList(:).name]; % extract a string with all folder
 % Determine fly number, by checking which flyNums are already in the
 % directory
 flyNum = 1;
-while( ~isempty( strfind( folderNameList, ['flyNum' num2str(flyNum,'%03d') ] ) ) ) 
+while(  contains( folderNameList, ['flyNum' num2str(flyNum,'%03d') ] )  ) 
     flyNum = flyNum + 1; %Set flyNum to one larger than the currently existing flyNum directory
 end
 

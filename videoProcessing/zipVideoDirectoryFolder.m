@@ -7,9 +7,6 @@ if strcmp(contAns,'y')
     
     ephysSettings;
     
-%     % % build path for where the video will be stored
-%     [~, path, ~, ~] = getDataFileName(exptInfo);
-
     % create zip of video folder name
     %zipGroupedVideoFolderName = [path,'videoFolderCompressed','.zip' ];
     zipGroupedVideoFolderName = [groupedVideoFolderName,'.zip' ];

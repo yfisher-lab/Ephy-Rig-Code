@@ -47,18 +47,17 @@ fNum = num2str(flyNum,'%03d');
 format = 'yymmdd';  %YYMMDD format
 dateString = [ '_' datestr(now, format) ]; % today's date ie '_161014'
 
-% calls ephysSettings to obtain the variable dataDirectory - yf
+% calls ephysSettings to obtain the variable settings.dataDirectory - yf
 ephysSettings;
+
 % save current ephySetting variables into FlyData for future reference
-FlyData.ephySettings.bob = settings.bob;
+% FlyData.ephySettings.bob = settings.bob;
 FlyData.ephySettings = settings;
 
-% path = [dataDirectory,prefixCode,'\expNum',eNum,...
-%     '\flyNum',fNum];
-path = [dataDirectory,prefixCode,'\expNum',eNum,...
+path = [settings.dataDirectory,prefixCode,'\expNum',eNum,...
     '\flyNum',fNum, dateString];
 
-if ~isdir(path)
+if ~isfolder(path)
     mkdir(path)
 end
 
