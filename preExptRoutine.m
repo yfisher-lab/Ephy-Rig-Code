@@ -62,7 +62,7 @@ end
 contAns = input('\n\n Would you like to run a trial in V-clamp to measure cell attached spikes? ','s');
 if strcmp(contAns,'y')
     % build command trace
-    TRIAL_FRAME_NUM = settings.sampRate * settings.cellAttached.Dur;
+    TRIAL_FRAME_NUM = rigSettings.sampRate * rigSettings.cellAttached.Dur;
     
     stimulus.command = zeros(1, TRIAL_FRAME_NUM);
     stimulus.name = 'cellAttachedTrial';

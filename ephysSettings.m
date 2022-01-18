@@ -9,35 +9,35 @@
 %% Parameters
 
 % Data folder
-settings.dataDirectory = 'C:\Users\fisherlab\Documents\EphyData\'; % 
+rigSettings.dataDirectory = 'C:\Users\fisherlab\Documents\EphyData\'; % 
 
 % Device
-settings.devID = 'Dev1'; %for NI PCIe-6351
+rigSettings.devID = 'Dev1'; %for NI PCIe-6351
 
 % for seal test or any other case when not specified
-settings.defaultTrialDur = 2; % second
+rigSettings.defaultTrialDur = 2; % second
 
 % Samp Rate
-settings.sampRate  = 20e3;
+rigSettings.sampRate  = 20e3;
 
 %% TODO: UPDATE these values to match the configuration of each individual rig
 
-settings.bob.primary = 0; % primary 700b output, voltage or current depending on mode
-settings.bob.secondary = 1; % secondary 700b outputs, voltage or current depending on mode
+rigSettings.bob.primary = 0; % primary 700b output, voltage or current depending on mode
+rigSettings.bob.secondary = 1; % secondary 700b outputs, voltage or current depending on mode
 % As of 1/2022 the code assumes voltage clamp for seal tests periods and current
 % clamp for all other experimental trials
 
-settings.bob.aiType = 'SingleEnded'; % as opposed to 'differential' on the BOB, keep singleEnded.
-settings.bob.inChannelsUsed  = [0:1]; %TODO update for output channels...
+rigSettings.bob.aiType = 'SingleEnded'; % as opposed to 'differential' on the BOB, keep singleEnded.
+rigSettings.bob.inChannelsUsed  = [0:1]; %TODO update for output channels...
 
 
 PICOAMP_PER_NANOAMP = 1000; % 1000 pA/nA
-settings.current.amplifierGain = 0.5; % 0.5V/nA
-settings.current.softGain_pA = PICOAMP_PER_NANOAMP / settings.current.amplifierGain; %pAmp
+rigSettings.current.amplifierGain = 0.5; % 0.5V/nA
+rigSettings.current.softGain_pA = PICOAMP_PER_NANOAMP / rigSettings.current.amplifierGain; %pAmp
 
 MiliVOLTS_PER_VOLT = 1000; % 1000 mV/V  
-settings.voltage.amplifierGain = 10; % 10mV/mV 
-settings.voltage.softGain_mV = MiliVOLTS_PER_VOLT / settings.voltage.amplifierGain; % mV
+rigSettings.voltage.amplifierGain = 10; % 10mV/mV 
+rigSettings.voltage.softGain_mV = MiliVOLTS_PER_VOLT / rigSettings.voltage.amplifierGain; % mV
 
 % TODO add logic for current injection with analog output and scaling
 % factors

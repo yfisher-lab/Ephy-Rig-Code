@@ -19,10 +19,10 @@ more than on experiment is done on one cell).
 
 % Make numbers strings
 eNum = num2str(expNum,'%03d');
-ephysSettings;   % Loads settings, including personal dataDirectory
+ephysSettings;   % Loads rigSettings, including personal dataDirectory
 
 % path to the experimental folder
-path = [settings.dataDirectory ,prefixCode,'\expNum',eNum];
+path = [rigSettings.dataDirectory ,prefixCode,'\expNum',eNum];
 if ~isdir(path)
     mkdir(path)
 end

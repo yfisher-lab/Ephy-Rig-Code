@@ -18,7 +18,7 @@ currentClampBool = getRecordingMode;
 % [~, dirPath, ~, ~] = getDataFileName(exptInfo);
 ephysSettings;
 % Ask user if we are aquiring a video of the fly for this experiment
-[videoRecordingBool , movieDirectoryGroupedVideo] = setUpVideoAquisition( settings.rawVidDir , exptInfo );
+[videoRecordingBool , movieDirectoryGroupedVideo] = setUpVideoAquisition( rigSettings.rawVidDir , exptInfo );
 
 while 1
     ephysSettings;
@@ -104,7 +104,7 @@ function [out] = q( )
     ephysSettings;
     TRIAL_DURATION = 15; %seconds  % trial duration
     fprintf('Running the no injection 15 second function');
-    out.command  = zeros(1,TRIAL_DURATION*settings.sampRate);
+    out.command  = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
 end
 %% constantCurrent
 function [out] = constantCurrent(InjAmp)
@@ -114,8 +114,8 @@ function [out] = constantCurrent(InjAmp)
     TRIAL_DURATION = 60; %seconds
     fprintf('Running constant injection for 60 second function');
 
-    injectionCommand = InjAmp * ones(1,TRIAL_DURATION*settings.sampRate);
-    out.command = injectionCommand * settings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
+    injectionCommand = InjAmp * ones(1,TRIAL_DURATION*rigSettings.sampRate);
+    out.command = injectionCommand * rigSettings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
 end
 
 %% basicCurrentClamp
@@ -125,8 +125,8 @@ function [out] = basicCurrentClamp(duration)
     % trial duration
     TRIAL_DURATION = duration; %seconds
 
-    injectionCommand = zeros(1,TRIAL_DURATION*settings.sampRate);
-    out.command = injectionCommand * settings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
+    injectionCommand = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
+    out.command = injectionCommand * rigSettings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_vertStripeON
@@ -149,7 +149,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -174,7 +174,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_vertStripeON_270_right90Blank
@@ -197,7 +197,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -220,7 +220,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -243,7 +243,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_2bars_180deg
@@ -265,7 +265,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_3bars_120
@@ -287,7 +287,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_dotAndBar_270
@@ -309,7 +309,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_vertStripeON_270world
@@ -333,7 +333,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_2bars_135deg_270world
@@ -355,7 +355,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_1pixeldotON_270
@@ -377,7 +377,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_stripeLowContrast_270
@@ -406,7 +406,7 @@ out.panelParams = panelParams;
 % tell system closed loop setting in use
 out.closedLoop = true;
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_stripeLowContrast_270Inverted
@@ -435,7 +435,7 @@ out.panelParams = panelParams;
 % tell system closed loop setting in use
 out.closedLoop = true;
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_vertStripeOFF_270world_phase1
@@ -459,7 +459,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_Ofstad
@@ -483,7 +483,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_complexWorld
@@ -506,7 +506,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_complexScene
@@ -529,7 +529,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_starField
@@ -552,7 +552,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_starField_invertedBar
@@ -575,7 +575,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_structuredStarField_invertedBar
@@ -598,7 +598,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_invertedGain_270world
@@ -622,7 +622,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% closedLoop_2bars_90deg_270world
@@ -644,7 +644,7 @@ out.panelParams = panelParams;
 out.closedLoop = true;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %% dotRandLocONIpsi
 function [out ] = dotRandLocONIpsi( )
@@ -661,7 +661,7 @@ panelParams.positionFuncNumY = 2;
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% dotONLocalSearch ( xpos_offset )
@@ -681,7 +681,7 @@ panelParams.initialPosition = [ xpos_offset, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %% dotRandLocON
 function [out ] = dotRandLocON( )
@@ -698,7 +698,7 @@ panelParams.positionFuncNumY = 6;
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %% barRandLocON
 function [out ] = barRandLocON( )
@@ -715,7 +715,7 @@ panelParams.positionFuncNumY = 8;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% barRandLocON
@@ -733,7 +733,7 @@ panelParams.positionFuncNumY = 8;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% barRandLocOFF
@@ -751,7 +751,7 @@ panelParams.positionFuncNumY = 8;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% barRandLocON270
@@ -779,7 +779,7 @@ panelParams.positionFuncNumY = 17;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% distractBarRand_FAST
@@ -797,7 +797,7 @@ panelParams.positionFuncNumY = 8;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %% complexWorldRandLocON270
 function [out ] = complexWorldRandLocON270( )
@@ -814,7 +814,7 @@ panelParams.positionFuncNumY = 17;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% complexWorldRandLocON270
@@ -832,7 +832,7 @@ panelParams.positionFuncNumY = 17;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% barRandLocON_1pixel
@@ -850,7 +850,7 @@ panelParams.positionFuncNumY = 8;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% barRandLocON_4pixel
@@ -868,7 +868,7 @@ panelParams.positionFuncNumY = 8;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %% 4pixel Grating 15 deg/s
 function [out ] = movingGrating_4pixel_15degS( dur )
@@ -885,7 +885,7 @@ panelParams.positionFuncNumY = 8;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %% 4pixel Grating 50deg/s
 function [out ] = movingGrating_4pixel_50degS( dur )
@@ -902,7 +902,7 @@ panelParams.positionFuncNumY = 8;% static, 0
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %% flashStripeON_2s( offset )
 function [out ] = flashStripeON_2s( xpos_offset )
@@ -920,7 +920,7 @@ panelParams.initialPosition = [ xpos_offset, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% flashStripeON_500ms( offset )
@@ -939,7 +939,7 @@ panelParams.initialPosition = [ xpos_offset, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% flashStripeON_500msON_5sOFF( offset , currentInjection )
@@ -961,7 +961,7 @@ out.panelParams = panelParams;
 %build current command to align in time with when the bar is flashed
 PATTERN_FLASH_DURATION = 0.5; % seconds
 INTER_FLASH_DURATION = 4.5; % seconds
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 
 % injection timing
 injectStartTime = TRIGGER_DELAY + INTER_FLASH_DURATION;
@@ -970,8 +970,8 @@ injectEndTime = TRIGGER_DELAY + INTER_FLASH_DURATION + PATTERN_FLASH_DURATION;
 stimulusPeriod = PATTERN_FLASH_DURATION + INTER_FLASH_DURATION;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = injectStartTime * settings.sampRate;
-    injectEndFrame = injectEndTime * settings.sampRate;
+    injectStartFrame = injectStartTime * rigSettings.sampRate;
+    injectEndFrame = injectEndTime * rigSettings.sampRate;
     
     if(injectStartFrame < 0) % check if injectStartFrame is negative which will not work
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -986,7 +986,7 @@ end
 currentCommand = inj_amp *  currentCommand ;
 
 % build current command in correct units
-out.command = currentCommand * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% flashStripeON_300msON_300msOFF_currInj( offset , currentInjection )
@@ -1008,7 +1008,7 @@ out.panelParams = panelParams;
 %build current command to align in time with when the bar is flashed
 PATTERN_FLASH_DURATION = 0.3; % seconds
 INTER_FLASH_DURATION = 0.3; % seconds
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 
 % injection timing
 injectStartTime = TRIGGER_DELAY + INTER_FLASH_DURATION;
@@ -1017,8 +1017,8 @@ injectEndTime = TRIGGER_DELAY + INTER_FLASH_DURATION + PATTERN_FLASH_DURATION;
 stimulusPeriod = PATTERN_FLASH_DURATION + INTER_FLASH_DURATION;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = injectStartTime * settings.sampRate;
-    injectEndFrame = injectEndTime * settings.sampRate;
+    injectStartFrame = injectStartTime * rigSettings.sampRate;
+    injectEndFrame = injectEndTime * rigSettings.sampRate;
     
     if(injectStartFrame < 0) % check if injectStartFrame is negative which will not work
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -1033,7 +1033,7 @@ end
 currentCommand = inj_amp *  currentCommand ;
 
 % build current command in correct units
-out.command = currentCommand * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -1056,7 +1056,7 @@ out.panelParams = panelParams;
 %build current command to align in time with when the bar is flashed
 PATTERN_FLASH_DURATION = 0.3; % seconds
 INTER_FLASH_DURATION = 0.3; % seconds
-shutterCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+shutterCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 
 % injection timing
 injectStartTime = TRIGGER_DELAY + INTER_FLASH_DURATION;
@@ -1065,8 +1065,8 @@ injectEndTime = TRIGGER_DELAY + INTER_FLASH_DURATION + PATTERN_FLASH_DURATION;
 stimulusPeriod = PATTERN_FLASH_DURATION + INTER_FLASH_DURATION;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = injectStartTime * settings.sampRate;
-    injectEndFrame = injectEndTime * settings.sampRate;
+    injectStartFrame = injectStartTime * rigSettings.sampRate;
+    injectEndFrame = injectEndTime * rigSettings.sampRate;
     
     if(injectStartFrame < 0) % check if injectStartFrame is negative which will not work
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -1081,7 +1081,7 @@ end
 %  to open the lamp shutter
 out.shutterCommand = shutterCommand;
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 
 end
 
@@ -1104,8 +1104,8 @@ out.panelParams = panelParams;
 %build current command to align in time with when the bar is flashed
 PATTERN_FLASH_DURATION = 0.3; % seconds
 INTER_FLASH_DURATION = 0.3; % seconds
-shutterCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+shutterCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 
 % injection timing
 injectStartTime = TRIGGER_DELAY + INTER_FLASH_DURATION;
@@ -1114,8 +1114,8 @@ injectEndTime = TRIGGER_DELAY + INTER_FLASH_DURATION + PATTERN_FLASH_DURATION;
 stimulusPeriod = PATTERN_FLASH_DURATION + INTER_FLASH_DURATION;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = injectStartTime * settings.sampRate;
-    injectEndFrame = injectEndTime * settings.sampRate;
+    injectStartFrame = injectStartTime * rigSettings.sampRate;
+    injectEndFrame = injectEndTime * rigSettings.sampRate;
     
     if(injectStartFrame < 0) % check if injectStartFrame is negative which will not work
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -1137,7 +1137,7 @@ currentCommand = inj_amp *  currentCommand ;
 %  to open the lamp shutter
 out.shutterCommand = shutterCommand;
 % build current command in correct units
-out.command = currentCommand * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% flashStripe500msON_2Loc60deg_1stLocInjPaired( xpos_offset_1st , currentInjection )
@@ -1159,7 +1159,7 @@ out.panelParams = panelParams;
 %build current command to align in time with when the bar is flashed
 PATTERN_FLASH_DURATION = 0.5; % seconds
 INTER_FLASH_DURATION = 7.5; % seconds
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 
 % injection timing
 injectStartTime = TRIGGER_DELAY + INTER_FLASH_DURATION;
@@ -1168,8 +1168,8 @@ injectEndTime = TRIGGER_DELAY + INTER_FLASH_DURATION + PATTERN_FLASH_DURATION;
 stimulusPeriod = PATTERN_FLASH_DURATION + INTER_FLASH_DURATION;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = injectStartTime * settings.sampRate;
-    injectEndFrame = injectEndTime * settings.sampRate;
+    injectStartFrame = injectStartTime * rigSettings.sampRate;
+    injectEndFrame = injectEndTime * rigSettings.sampRate;
     
     if(injectStartFrame < 0) % check if injectStartFrame is negative which will not work
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -1184,7 +1184,7 @@ end
 currentCommand = inj_amp *  currentCommand ;
 
 % build current command in correct units
-out.command = currentCommand * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 
 end
 
@@ -1204,7 +1204,7 @@ panelParams.initialPosition = [ xpos_offset, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% flashStripeON4pixel_2s( offset )
@@ -1223,7 +1223,7 @@ panelParams.initialPosition = [ xpos_offset, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% flashStripeON4pixel_500ms( offset )
@@ -1242,7 +1242,7 @@ panelParams.initialPosition = [ xpos_offset, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% FFF2s( )
@@ -1261,7 +1261,7 @@ panelParams.positionFuncNumY = 9;% 2 sec off, 2 sec on
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% FFF500ms(  )
@@ -1279,7 +1279,7 @@ panelParams.positionFuncNumY = 10;% 500ms off, 500msec on
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% staticStripeOn
@@ -1299,7 +1299,7 @@ panelParams.initialPosition = [ barPanelPos, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -1318,7 +1318,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripeON_flexibleDur
@@ -1336,7 +1336,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripeON_8mins
@@ -1354,7 +1354,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripeON_8mins_dark60to250sec
@@ -1372,7 +1372,7 @@ panelParams.positionFuncNumY = 31;% hard coded to saline timing....
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripeON_8mins_dark0to240sec
@@ -1390,7 +1390,7 @@ panelParams.positionFuncNumY = 32;% hard coded to saline timing....
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripeON_10mins
@@ -1408,7 +1408,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripeON_15ds
@@ -1438,7 +1438,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripeON_50ds
@@ -1468,7 +1468,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripeON_150ds
@@ -1498,7 +1498,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %% movingRightStripeON_300ds
 function [out ] = movingRightStripeON_300ds( dur , contrast)
@@ -1526,7 +1526,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %% movingRightStripeON_450ds
 function [out ] = movingRightStripeON_450ds( dur, contrast )
@@ -1555,7 +1555,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripeON_600ds
@@ -1585,7 +1585,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripe_currentInj
@@ -1607,7 +1607,7 @@ panelParams.positionFuncNumY = 8;% static
 % store parameter values
 out.panelParams = panelParams;
 
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 % Build current command to inject current centered around when the pattern is at X_locationToInject
 timeToCenterOfFirstXlocation = TRIGGER_DELAY + X_locationToInject * DOT_DWELL_DURATION - (DOT_DWELL_DURATION / 2);
 % calc first injection timing
@@ -1618,8 +1618,8 @@ injectEndTime = timeToCenterOfFirstXlocation + ( INJECTION_DURATION / 2);
 stimulusPeriod = DOT_DWELL_DURATION * DWELL_LOCATIONS;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = round ( injectStartTime * settings.sampRate );
-    injectEndFrame = round ( injectEndTime * settings.sampRate );
+    injectStartFrame = round ( injectStartTime * rigSettings.sampRate );
+    injectEndFrame = round ( injectEndTime * rigSettings.sampRate );
     
     if(injectStartFrame < 0)
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -1633,7 +1633,7 @@ end
 % scale current command by wanted amplitude of injection
 currentCommand = inj_amp *  currentCommand ;
 
-out.command = currentCommand * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripe_currINJWithOpto, chrimson activation while the current injection occurs
@@ -1655,7 +1655,7 @@ panelParams.positionFuncNumY = 8;% static
 % store parameter values
 out.panelParams = panelParams;
 
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 % Build current command to inject current centered around when the pattern is at X_locationToInject
 timeToCenterOfFirstXlocation = TRIGGER_DELAY + X_locationToInject * DOT_DWELL_DURATION - (DOT_DWELL_DURATION / 2);
 % calc first injection timing
@@ -1666,8 +1666,8 @@ injectEndTime = timeToCenterOfFirstXlocation + ( INJECTION_DURATION / 2);
 stimulusPeriod = DOT_DWELL_DURATION * DWELL_LOCATIONS;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = round ( injectStartTime * settings.sampRate );
-    injectEndFrame = round ( injectEndTime * settings.sampRate );
+    injectStartFrame = round ( injectStartTime * rigSettings.sampRate );
+    injectEndFrame = round ( injectEndTime * rigSettings.sampRate );
     
     if(injectStartFrame < 0)
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -1683,7 +1683,7 @@ out.shutterCommand = currentCommand; % logical 0 or 1 for when shutter should be
 % scale current command by wanted amplitude of injection
 currentCommand = inj_amp *  currentCommand ;
 
-out.command = currentCommand * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 
@@ -1706,7 +1706,7 @@ panelParams.positionFuncNumY = 30;% static
 % store parameter values
 out.panelParams = panelParams;
 
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 % Build current command to inject current centered around when the pattern is at X_locationToInject
 timeToCenterOfFirstXlocation = TRIGGER_DELAY + X_locationToInject * DOT_DWELL_DURATION - (DOT_DWELL_DURATION / 2);
 % calc first injection timing
@@ -1717,8 +1717,8 @@ injectEndTime = timeToCenterOfFirstXlocation + ( INJECTION_DURATION / 2);
 stimulusPeriod = DOT_DWELL_DURATION * DWELL_LOCATIONS;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = round ( injectStartTime * settings.sampRate );
-    injectEndFrame = round ( injectEndTime * settings.sampRate );
+    injectStartFrame = round ( injectStartTime * rigSettings.sampRate );
+    injectEndFrame = round ( injectEndTime * rigSettings.sampRate );
     
     if(injectStartFrame < 0)
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -1734,7 +1734,7 @@ out.shutterCommand = currentCommand; % logical 0 or 1 for when shutter should be
 % scale current command by wanted amplitude of injection
 currentCommand = inj_amp *  currentCommand ;
 
-out.command = currentCommand * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripe_Opto5ms_1secIPD, chrimson stim pulsed for 5ms at 1 sec intervals throught visual stimulus trial
@@ -1764,19 +1764,19 @@ shutterCommand = [];
 
 for i = 1: stimulationRepetitions
     
-    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, OPTO_STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, OPTO_STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
 % clip off any numbers that passed the duration the planned trial
-shutterCommand = shutterCommand(1:TOTAL_DURATION * settings.sampRate);
+shutterCommand = shutterCommand(1:TOTAL_DURATION * rigSettings.sampRate);
 
 out.shutterCommand = shutterCommand; % logical 0 or 1 for when shutter should be open
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripe_Opto10ms_2secIPD, chrimson stim pulsed for 10ms at 2 sec intervals throught visual stimulus trial
@@ -1806,19 +1806,19 @@ shutterCommand = [];
 
 for i = 1: stimulationRepetitions
     
-    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, OPTO_STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, OPTO_STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
 % clip off any numbers that passed the duration the planned trial
-shutterCommand = shutterCommand(1:TOTAL_DURATION * settings.sampRate);
+shutterCommand = shutterCommand(1:TOTAL_DURATION * rigSettings.sampRate);
 
 out.shutterCommand = shutterCommand; % logical 0 or 1 for when shutter should be open
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripe_Opto chrimson stim pulsed for user chosen time at user chosen intervals throught visual stimulus trial
@@ -1848,19 +1848,19 @@ shutterCommand = [];
 
 for i = 1: stimulationRepetitions
     
-    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, OPTO_STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, OPTO_STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
 % clip off any numbers that passed the duration the planned trial
-shutterCommand = shutterCommand(1:TOTAL_DURATION * settings.sampRate);
+shutterCommand = shutterCommand(1:TOTAL_DURATION * rigSettings.sampRate);
 
 out.shutterCommand = shutterCommand; % logical 0 or 1 for when shutter should be open
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -1891,19 +1891,19 @@ shutterCommand = [];
 
 for i = 1: stimulationRepetitions
     
-    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, OPTO_STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, OPTO_STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
 % clip off any numbers that passed the duration the planned trial
-shutterCommand = shutterCommand(1:TOTAL_DURATION * settings.sampRate);
+shutterCommand = shutterCommand(1:TOTAL_DURATION * rigSettings.sampRate);
 
 out.shutterCommand = shutterCommand; % logical 0 or 1 for when shutter should be open
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -1925,19 +1925,19 @@ shutterCommand = [];
 
 for i = 1: stimulationRepetitions
     
-    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, OPTO_STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, OPTO_STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
 % clip off any numbers that passed the duration the planned trial
-shutterCommand = shutterCommand(1:TOTAL_DURATION * settings.sampRate);
+shutterCommand = shutterCommand(1:TOTAL_DURATION * rigSettings.sampRate);
 
 out.shutterCommand = shutterCommand; % logical 0 or 1 for when shutter should be open
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% optoOnly10ms_2secIPD, chrimson stim pulsed for 10ms at 2 sec intervals 
@@ -1958,19 +1958,19 @@ shutterCommand = [];
 
 for i = 1: stimulationRepetitions
     
-    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, OPTO_STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, OPTO_STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
 % clip off any numbers that passed the duration the planned trial
-shutterCommand = shutterCommand(1:TOTAL_DURATION * settings.sampRate);
+shutterCommand = shutterCommand(1:TOTAL_DURATION * rigSettings.sampRate);
 
 out.shutterCommand = shutterCommand; % logical 0 or 1 for when shutter should be open
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% optoOnly, chrimson stim pulsed
@@ -1991,19 +1991,19 @@ shutterCommand = [];
 
 for i = 1: stimulationRepetitions
     
-    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, OPTO_STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, OPTO_STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
 % clip off any numbers that passed the duration the planned trial
-shutterCommand = shutterCommand(1:TOTAL_DURATION * settings.sampRate);
+shutterCommand = shutterCommand(1:TOTAL_DURATION * rigSettings.sampRate);
 
 out.shutterCommand = shutterCommand; % logical 0 or 1 for when shutter should be open
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -2027,7 +2027,7 @@ panelParams.positionFuncNumY = 8;% static
 % store parameter values
 out.panelParams = panelParams;
 
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 % Build current command to inject current centered around when the pattern is at X_locationToInject
 timeToCenterOfFirstXlocation = TRIGGER_DELAY + X_locationToInject * DOT_DWELL_DURATION - (DOT_DWELL_DURATION / 2);
 % calc first injection timing
@@ -2038,8 +2038,8 @@ injectEndTime = timeToCenterOfFirstXlocation + ( INJECTION_DURATION / 2);
 stimulusPeriod = DOT_DWELL_DURATION * DWELL_LOCATIONS;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = round ( injectStartTime * settings.sampRate );
-    injectEndFrame = round ( injectEndTime * settings.sampRate );
+    injectStartFrame = round ( injectStartTime * rigSettings.sampRate );
+    injectEndFrame = round ( injectEndTime * rigSettings.sampRate );
     
     if(injectStartFrame < 0)
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -2055,7 +2055,7 @@ out.shutterCommand = currentCommand; % logical 0 or 1 for when shutter should be
 % scale current command by wanted amplitude of injection
 currentCommand = inj_amp *  currentCommand ;
 
-out.command = currentCommand * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 
@@ -2075,7 +2075,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightStripe4pixel_currentInj
@@ -2097,7 +2097,7 @@ panelParams.positionFuncNumY = 8;% static
 % store parameter values
 out.panelParams = panelParams;
 
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 % Build current command to inject current centered around when the pattern is at X_locationToInject
 timeToCenterOfFirstXlocation = TRIGGER_DELAY + X_locationToInject * DOT_DWELL_DURATION - (DOT_DWELL_DURATION / 2);
 % calc first injection timing
@@ -2108,8 +2108,8 @@ injectEndTime = timeToCenterOfFirstXlocation + ( INJECTION_DURATION / 2);
 stimulusPeriod = DOT_DWELL_DURATION * DWELL_LOCATIONS;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = injectStartTime * settings.sampRate;
-    injectEndFrame = injectEndTime * settings.sampRate;
+    injectStartFrame = injectStartTime * rigSettings.sampRate;
+    injectEndFrame = injectEndTime * rigSettings.sampRate;
     
     if(injectStartFrame < 0)
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -2123,7 +2123,7 @@ end
 % scale current command by wanted amplitude of injection
 currentCommand = inj_amp *  currentCommand ;
 
-out.command = currentCommand * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 
@@ -2144,7 +2144,7 @@ panelParams.positionFuncNumY = 8;% static
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightDotON
@@ -2163,7 +2163,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -2183,7 +2183,7 @@ panelParams.initialPosition = [ 0, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightDotON_topAndBottom
@@ -2202,7 +2202,7 @@ panelParams.initialPosition = [ 0, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingTopAndMiddleDot 
@@ -2221,7 +2221,7 @@ panelParams.initialPosition = [ 0, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingTopAndBottomDot
@@ -2240,7 +2240,7 @@ panelParams.initialPosition = [ 0, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingTopAndBottomDot2Swings
@@ -2259,7 +2259,7 @@ panelParams.initialPosition = [ 0, 0]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightDotON_flexDur
@@ -2278,7 +2278,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingLeftDotON_flexDur
@@ -2297,7 +2297,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingRightDot_Opto
@@ -2327,19 +2327,19 @@ shutterCommand = [];
 
 for i = 1: stimulationRepetitions
     
-    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, INTER_OPTO_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, OPTO_STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, OPTO_STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
 % clip off any numbers that passed the duration the planned trial
-shutterCommand = shutterCommand(1:TOTAL_DURATION * settings.sampRate);
+shutterCommand = shutterCommand(1:TOTAL_DURATION * rigSettings.sampRate);
 
 out.shutterCommand = shutterCommand; % logical 0 or 1 for when shutter should be open
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -2363,7 +2363,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 % store parameter values
 out.panelParams = panelParams;
 
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 % Build current command to inject current centered around when the pattern is at X_locationToInject
 timeToCenterOfFirstXlocation = TRIGGER_DELAY + X_locationToInject * DOT_DWELL_DURATION - (DOT_DWELL_DURATION / 2);
 % calc first injection timing
@@ -2373,8 +2373,8 @@ injectEndTime = timeToCenterOfFirstXlocation + ( INJECTION_DURATION / 2);
 stimulusPeriod = DOT_DWELL_DURATION * DWELL_LOCATIONS;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = injectStartTime * settings.sampRate;
-    injectEndFrame = injectEndTime * settings.sampRate;
+    injectStartFrame = injectStartTime * rigSettings.sampRate;
+    injectEndFrame = injectEndTime * rigSettings.sampRate;
     
     if(injectStartFrame < 0) % check if injectStartFrame is negative which will not work
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -2388,7 +2388,7 @@ end
 % scale current command by wanted amplitude of injection
 currentCommand = inj_amp *  currentCommand ;
 
-out.command = currentCommand * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 %% movingRightDot4pixelON
@@ -2407,7 +2407,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -2431,7 +2431,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 % store parameter values
 out.panelParams = panelParams;
 
-currentCommand = zeros(1, TOTAL_DURATION * settings.sampRate);
+currentCommand = zeros(1, TOTAL_DURATION * rigSettings.sampRate);
 % Build current command to inject current centered around when the pattern is at X_locationToInject
 timeToCenterOfFirstXlocation = TRIGGER_DELAY + X_locationToInject * DOT_DWELL_DURATION - (DOT_DWELL_DURATION / 2);
 % calc first injection timing
@@ -2441,8 +2441,8 @@ injectEndTime = timeToCenterOfFirstXlocation + ( INJECTION_DURATION / 2);
 stimulusPeriod = DOT_DWELL_DURATION * DWELL_LOCATIONS;
 
 while ( injectEndTime <= TOTAL_DURATION )
-    injectStartFrame = injectStartTime * settings.sampRate;
-    injectEndFrame = injectEndTime * settings.sampRate;
+    injectStartFrame = injectStartTime * rigSettings.sampRate;
+    injectEndFrame = injectEndTime * rigSettings.sampRate;
     
     if(injectStartFrame < 0) % check if injectStartFrame is negative which will not work
     injectStartFrame = 1; % if the X location is too early in the pattern, this will shorten the inj period for this first stimulus, but not the later ones. 
@@ -2456,7 +2456,7 @@ end
 % scale current command by wanted amplitude of injection
 currentCommand = inj_amp *  currentCommand ;
 
-out.command = currentCommand * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentCommand * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 %% dotRandHorizLocON()
@@ -2475,7 +2475,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% dotRandHorizLocON()
@@ -2494,7 +2494,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingLeftDotON
@@ -2513,7 +2513,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% movingLeftDot4pixelON
@@ -2533,7 +2533,7 @@ panelParams.initialPosition = [ 0, elevation_Y ]; % [ X, Y ]
 out.panelParams = panelParams;
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 %%
 %%
@@ -2543,7 +2543,7 @@ VISUAL_TRIGGER_DURATION = 1; % second
 % Panel trigger digital signal should be sent as 1 = ON 5V
 
 % build trigger into the first second of the trial
-out = [ ones(1, VISUAL_TRIGGER_DURATION * settings.sampRate)  zeros(1, (trialDuration_sec - VISUAL_TRIGGER_DURATION)  *  settings.sampRate) ]; 
+out = [ ones(1, VISUAL_TRIGGER_DURATION * rigSettings.sampRate)  zeros(1, (trialDuration_sec - VISUAL_TRIGGER_DURATION)  *  rigSettings.sampRate) ]; 
 end
 
 %% Chrimson stimulation pattern functions
@@ -2559,10 +2559,10 @@ POST_STIM_DURATION = 2; % seconds
 TOTAL_DURATION = PRE_STIM_DURATION + STIM_DURATION + POST_STIM_DURATION; 
 
 % build shutter Trigger 
-shutterCommand = [ zeros(1, PRE_STIM_DURATION * settings.sampRate)  ones(1, STIM_DURATION * settings.sampRate) zeros(1, POST_STIM_DURATION * settings.sampRate)  ]; 
+shutterCommand = [ zeros(1, PRE_STIM_DURATION * rigSettings.sampRate)  ones(1, STIM_DURATION * rigSettings.sampRate) zeros(1, POST_STIM_DURATION * rigSettings.sampRate)  ]; 
 
 % no current command
-out.command = zeros(1, TOTAL_DURATION * settings.sampRate) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, TOTAL_DURATION * rigSettings.sampRate) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 
 %  trigger digital signal should be sent as 1 = ON 5V, which will be used
 %  to open the lamp shutter
@@ -2584,9 +2584,9 @@ STIM_DURATION = dur; % seconds
 shutterCommand = [];
 for i = 1: reps
     
-    preStimCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
@@ -2596,7 +2596,7 @@ end
 out.shutterCommand = shutterCommand;
 
 % no current command
-out.command = zeros(1, length(shutterCommand)) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, length(shutterCommand)) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 
 end
 
@@ -2613,9 +2613,9 @@ STIM_DURATION = dur; % seconds
 shutterCommand = [];
 for i = 1: reps
     
-    preStimCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
@@ -2625,7 +2625,7 @@ end
 out.shutterCommand = shutterCommand;
 
 % no current command
-out.command = zeros(1, length(shutterCommand)) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, length(shutterCommand)) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -2641,9 +2641,9 @@ STIM_DURATION = dur; % seconds
 shutterCommand = [];
 for i = 1: reps
     
-    preStimCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
@@ -2653,7 +2653,7 @@ end
 out.shutterCommand = shutterCommand;
 
 % no current command
-out.command = zeros(1, length(shutterCommand)) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, length(shutterCommand)) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 
@@ -2674,10 +2674,10 @@ currentInjection = [];
 for i = 1: reps
     
 
-    preInjCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preInjCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
 
-    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * settings.sampRate );
+    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * rigSettings.sampRate );
       
     % build the current injection command
     currentInjection = [currentInjection preInjCommand injectionCommand];
@@ -2685,7 +2685,7 @@ end
 
 
 % Convert the pA value into the amount to send in Volts from the DAQ
-out.command = currentInjection * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentInjection * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 
 end
 
@@ -2706,11 +2706,11 @@ shutterCommand = [];
 currentInjection = [];
 for i = 1: reps
     
-    preStimCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
-    preInjCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
+    preInjCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, STIM_DURATION * settings.sampRate );
-    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, STIM_DURATION * rigSettings.sampRate );
+    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * rigSettings.sampRate );
     
     % build the shutter command
     shutterCommand = [shutterCommand preStimCommand stimCommand];   
@@ -2721,7 +2721,7 @@ end
 
 %Shift the current injection command such that is it is decorrelated with
 %the shutter:
-currentInjection = circshift ( currentInjection, OFFSET_OF_CURR_INJECTION * settings.sampRate);
+currentInjection = circshift ( currentInjection, OFFSET_OF_CURR_INJECTION * rigSettings.sampRate);
 
 
 %  trigger digital signal should be sent as 1 = ON 5V, which will be used
@@ -2729,7 +2729,7 @@ currentInjection = circshift ( currentInjection, OFFSET_OF_CURR_INJECTION * sett
 out.shutterCommand = shutterCommand;
 
 % Convert the pA value into the amount to send in Volts from the DAQ
-out.command = currentInjection * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentInjection * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 
 end
 
@@ -2748,15 +2748,15 @@ POST_STIM_DURATION = 60; % sec
 shutterCommand = [];
 for i = 1: reps
     
-    preStimCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, STIM_DURATION * rigSettings.sampRate );
     
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
 
 % add recording period to end of trial to look at changes after the stim
-shutterCommand = [ shutterCommand zeros(1, POST_STIM_DURATION * settings.sampRate ) ];
+shutterCommand = [ shutterCommand zeros(1, POST_STIM_DURATION * rigSettings.sampRate ) ];
 
 
 %  trigger digital signal should be sent as 1 = ON 5V, which will be used
@@ -2764,7 +2764,7 @@ shutterCommand = [ shutterCommand zeros(1, POST_STIM_DURATION * settings.sampRat
 out.shutterCommand = shutterCommand;
 
 % no current command
-out.command = zeros(1, length(shutterCommand)) * settings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
+out.command = zeros(1, length(shutterCommand)) * rigSettings.daq.currentConversionFactor ; % send full command out, in Voltage for the daq to send
 end
 
 %% Current injection Train
@@ -2783,19 +2783,19 @@ POST_INJ_DURATION = 60; % sec
 currentInjection = [];
 for i = 1: reps
     
-    preInjCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preInjCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
-    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * settings.sampRate );
+    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * rigSettings.sampRate );
     
     % build the current injection command
     currentInjection = [currentInjection preInjCommand injectionCommand];
 end
 
 % add recording period to end of trial to look at changes after the stim
-currentInjection = [ currentInjection zeros(1, POST_INJ_DURATION * settings.sampRate ) ];
+currentInjection = [ currentInjection zeros(1, POST_INJ_DURATION * rigSettings.sampRate ) ];
 
 % Convert the pA value into the amount to send in Volts from the DAQ
-out.command = currentInjection * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentInjection * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 %% stimTrain w/ simultaneous pulses of Current injection when shutter is open
@@ -2813,11 +2813,11 @@ shutterCommand = [];
 currentInjection = [];
 for i = 1: reps
     
-    preStimCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
-    preInjCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
+    preInjCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, STIM_DURATION * settings.sampRate );
-    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, STIM_DURATION * rigSettings.sampRate );
+    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * rigSettings.sampRate );
     
     % build the shutter command
     shutterCommand = [shutterCommand preStimCommand stimCommand];
@@ -2826,15 +2826,15 @@ for i = 1: reps
 end
 
 % add recording period to end of trial to look at changes after the stim
-shutterCommand = [ shutterCommand zeros(1, POST_STIM_DURATION * settings.sampRate ) ];
-currentInjection = [ currentInjection zeros(1, POST_STIM_DURATION * settings.sampRate ) ];
+shutterCommand = [ shutterCommand zeros(1, POST_STIM_DURATION * rigSettings.sampRate ) ];
+currentInjection = [ currentInjection zeros(1, POST_STIM_DURATION * rigSettings.sampRate ) ];
 
 %  trigger digital signal should be sent as 1 = ON 5V, which will be used
 %  to open the lamp shutter
 out.shutterCommand = shutterCommand;
 
 % Convert the pA value into the amount to send in Volts from the DAQ
-out.command = currentInjection * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentInjection * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 
@@ -2854,11 +2854,11 @@ shutterCommand = [];
 currentInjection = [];
 
 % FIRST add the initial shutter period
-preStimCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
-preInjCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+preStimCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
+preInjCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
 
-stimCommand = ones( 1, FIRST_STIM_DURATION * settings.sampRate );
-injectionCommand = zeros( 1, FIRST_STIM_DURATION * settings.sampRate ); % no current inject on this part
+stimCommand = ones( 1, FIRST_STIM_DURATION * rigSettings.sampRate );
+injectionCommand = zeros( 1, FIRST_STIM_DURATION * rigSettings.sampRate ); % no current inject on this part
 
 % build the shutter command
 shutterCommand = [shutterCommand preStimCommand stimCommand];
@@ -2869,11 +2869,11 @@ currentInjection = [currentInjection preInjCommand injectionCommand];
 % NOW add the repreated stimulation trials
 for i = 1: reps
     
-    preStimCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
-    preInjCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
+    preInjCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, STIM_DURATION * settings.sampRate );
-    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, STIM_DURATION * rigSettings.sampRate );
+    injectionCommand = CURRENT_INJECTION_pA * ones( 1, STIM_DURATION * rigSettings.sampRate );
     
     % build the shutter command
     shutterCommand = [shutterCommand preStimCommand stimCommand];
@@ -2887,7 +2887,7 @@ end
 out.shutterCommand = shutterCommand;
 
 % Convert the pA value into the amount to send in Volts from the DAQ
-out.command = currentInjection * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentInjection * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 
@@ -2906,9 +2906,9 @@ shutterCommand = [];
 currentInjection = [];
 for i = 1: reps
     
-    preStimCommand = zeros(1, PRE_STIM_DURATION * settings.sampRate );
+    preStimCommand = zeros(1, PRE_STIM_DURATION * rigSettings.sampRate );
     
-    stimCommand = ones( 1, STIM_DURATION * settings.sampRate );
+    stimCommand = ones( 1, STIM_DURATION * rigSettings.sampRate );
     % build the shutter command
     shutterCommand = [shutterCommand preStimCommand stimCommand];
 end
@@ -2918,8 +2918,8 @@ currentInjection = CURRENT_INJECTION_pA * ones( 1, length ( shutterCommand ) ); 
 
 
 % add recording period to end of trial to look at changes after the stim
-shutterCommand = [ shutterCommand zeros(1, POST_STIM_DURATION * settings.sampRate ) ];
-currentInjection = [ currentInjection zeros(1, POST_STIM_DURATION * settings.sampRate ) ];
+shutterCommand = [ shutterCommand zeros(1, POST_STIM_DURATION * rigSettings.sampRate ) ];
+currentInjection = [ currentInjection zeros(1, POST_STIM_DURATION * rigSettings.sampRate ) ];
 
 
 %  trigger digital signal should be sent as 1 = ON 5V, which will be used
@@ -2928,7 +2928,7 @@ out.shutterCommand = shutterCommand;
 
 
 % Convert the pA value into the amount to send in Volts from the DAQ
-out.command = currentInjection * settings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
+out.command = currentInjection * rigSettings.daq.currentConversionFactor;% send full command out, in Voltage for the daq to send
 end
 
 
@@ -2960,9 +2960,9 @@ amp = ampList;
 epochs = [];
 injectionCommand = []; %create command variable
 for i = 1 : NUMBER_OF_STEPS
-    preStepCommand = zeros(1, PRE_STEP_DURATION * settings.sampRate );
+    preStepCommand = zeros(1, PRE_STEP_DURATION * rigSettings.sampRate );
     % pick the next amp
-    stepCommand = amp(i) * ones( 1, STEP_DURATION * settings.sampRate );
+    stepCommand = amp(i) * ones( 1, STEP_DURATION * rigSettings.sampRate );
     currentCommand = [preStepCommand stepCommand];
     
     % add this step to the trial
@@ -2972,7 +2972,7 @@ for i = 1 : NUMBER_OF_STEPS
     thisEpoch =  i * ones(1, length (currentCommand ));
     epochs = [epochs thisEpoch];  % add current epoch to the array
 end
-out.command = injectionCommand * settings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
+out.command = injectionCommand * rigSettings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
 out.epochs = epochs;
 end
 
@@ -2986,13 +2986,13 @@ PRE_STEP_DURATION = 2; % seconds
 STEP_DURATION = dur; % seconds
 STEP_AMP = amp; % pA
 
-preStepCommand = zeros(1, PRE_STEP_DURATION * settings.sampRate );
+preStepCommand = zeros(1, PRE_STEP_DURATION * rigSettings.sampRate );
 
-stepCommand = STEP_AMP * ones( 1, STEP_DURATION * settings.sampRate );
+stepCommand = STEP_AMP * ones( 1, STEP_DURATION * rigSettings.sampRate );
 
 injectionCommand = [preStepCommand stepCommand];
 
-out.command  = injectionCommand * settings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
+out.command  = injectionCommand * rigSettings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
 end
 
 %% stepLoop
@@ -3009,14 +3009,14 @@ STEP_AMP = amp; % pA
 injectionCommand = [];
 for i = 1: reps
     
-    preStepCommand = zeros(1, PRE_STEP_DURATION * settings.sampRate );
+    preStepCommand = zeros(1, PRE_STEP_DURATION * rigSettings.sampRate );
     
-    stepCommand = STEP_AMP * ones( 1, STEP_DURATION * settings.sampRate );
+    stepCommand = STEP_AMP * ones( 1, STEP_DURATION * rigSettings.sampRate );
     
     injectionCommand = [injectionCommand preStepCommand stepCommand];
 end
 
-out.command  = injectionCommand * settings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
+out.command  = injectionCommand * rigSettings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
 end
 
 %% IVcurve
@@ -3038,18 +3038,18 @@ ampList = MIN_INJ : stepSize : MAX_INJ;
 injectionCommand = [];
 for i = 1 : NUMBER_OF_STEPS
     
-    preStepCommand = zeros(1, PRE_STEP_DURATION * settings.sampRate );
+    preStepCommand = zeros(1, PRE_STEP_DURATION * rigSettings.sampRate );
     % pick the next amp
-    stepCommand = ampList(i) * ones( 1, STEP_DURATION * settings.sampRate );
+    stepCommand = ampList(i) * ones( 1, STEP_DURATION * rigSettings.sampRate );
     currentCommand = [preStepCommand stepCommand];
     % add this step to the trial
     injectionCommand = [injectionCommand currentCommand];
     
 end
 % add final 1 sec spacer at end
-injectionCommand = [injectionCommand zeros(1, PRE_STEP_DURATION * settings.sampRate )];
+injectionCommand = [injectionCommand zeros(1, PRE_STEP_DURATION * rigSettings.sampRate )];
 
-out.command = injectionCommand * settings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
+out.command = injectionCommand * rigSettings.daq.currentConversionFactor; % send full command out, in Voltage for the daq to send
 end 
 
 function [] = plotCommandSignals( stimulus )

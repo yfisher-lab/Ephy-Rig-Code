@@ -5,10 +5,10 @@ function [ out ] = addAccessStepPeriod( in , varargin)
 %   with a small current injection step that will be used to analize the neurons' access resistance
 %
 %      ephySettings is reference to obtain these variables (commented current 10/2016):
-%      settings.sampRate.out
-%      settings.pulse.Amp
-%      settings.pulse.Dur : 0.5
-%      settings.pulse.spacerDur : 2 seconds
+%      rigSettings.sampRate.out
+%      rigSettings.pulse.Amp
+%      rigSettings.pulse.Dur : 0.5
+%      rigSettings.pulse.spacerDur : 2 seconds
 %
 %   INPUT:
 %   in - contains 
@@ -34,23 +34,23 @@ else
 end
 ephysSettings %used to be samp Rate and pulse amplitude
 
-spacer = zeros(1,settings.pulse.spacerDur*settings.sampRate);
-spacerEpochNum = zeros(1,settings.pulse.spacerDur*settings.sampRate);
+spacer = zeros(1,rigSettings.pulse.spacerDur*rigSettings.sampRate);
+spacerEpochNum = zeros(1,rigSettings.pulse.spacerDur*rigSettings.sampRate);
 
 middleIndex = numel(spacer)/ 2; % find the middle of the spacer duration
 
 % find start and end of the pulse time
-pulseStart_ind = round( middleIndex - ((settings.pulse.Dur * settings.sampRate)/2));
-pulseEnd_ind = round( middleIndex + ((settings.pulse.Dur * settings.sampRate)/2));
+pulseStart_ind = round( middleIndex - ((rigSettings.pulse.Dur * rigSettings.sampRate)/2));
+pulseEnd_ind = round( middleIndex + ((rigSettings.pulse.Dur * rigSettings.sampRate)/2));
 
 
 % Set amplitude of the test step for either I-Clamp or V-Clamp
 if( CURRENT_CLAMP_MODE )
 % for I-Clamp set portion of spacer to be larger than zero for the step of pA injection
-spacer( pulseStart_ind : pulseEnd_ind) = settings.pulse.Amp * settings.daq.currentConversionFactor; % in Voltage for the daq to send
+spacer( pulseStart_ind : pulseEnd_ind) = rigSettings.pulse.Amp * settings.daq.currentConversionFactor; % in Voltage for the daq to send
 else 
 % for V-Clamp set portion of spacer to be larger than zero for the step of voltage injection
-spacer( pulseStart_ind : pulseEnd_ind) = settings.voltagePulse.Amp * settings.daq.voltageConversionFactor; % in Voltage for the daq to send
+spacer( pulseStart_ind : pulseEnd_ind) = rigSettings.voltagePulse.Amp * rigSettings.daq.voltageConversionFactor; % in Voltage for the daq to send
 end
 
 

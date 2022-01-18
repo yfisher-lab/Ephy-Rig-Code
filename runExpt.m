@@ -73,7 +73,7 @@ end
 %% Save Experimental Data ( ephysSettings,genotype + and seal test +)
     [~, path, ~, idString] = getDataFileName(exptInfo);
     settingsFileName = [path,idString,'exptData.mat'];
-    save(settingsFileName,'settings','exptInfo','preExptData'); 
+    save(settingsFileName,'rigSettings','exptInfo','preExptData'); 
 
 %% Run experiment with stimulus
 contAns = input('\n Would you like to start the experiment? ','s');

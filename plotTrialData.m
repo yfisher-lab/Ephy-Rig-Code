@@ -1,4 +1,4 @@
-function [ ] = plotTrialData( data, stimulus, settings )
+function [ ] = plotTrialData( data, stimulus, rigSettings )
 %PLOTTRIALDATA plots data from recently aquired trial
 %   plot both the current, the command and the voltage trace from the recorded data
 %
@@ -13,7 +13,7 @@ voltage = data.voltage; % mV
 FigHand = figure('Position',[50, 50, 1800, 800]);
 set(gcf, 'Color', 'w'); 
 
-timeArray = (1  :  length(current) ) / settings.sampRate; % seconds
+timeArray = (1  :  length(current) ) / rigSettings.sampRate; % seconds
 
 
 ax(1) = subplot(3,1,1);

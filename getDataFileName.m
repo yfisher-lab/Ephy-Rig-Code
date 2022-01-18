@@ -17,7 +17,7 @@ function [fullFileName, path, trialNum, idString] = getDataFileName(exptInfo)
     cellNum     = exptInfo.cellNum;
     cellExpNum  = exptInfo.cellExpNum; 
     
-    ephysSettings;   % Loads settings
+    ephysSettings;   % Loads rigSettings
   
     % Make numbers strings
     eNum = num2str(expNum,'%03d');
@@ -30,7 +30,7 @@ function [fullFileName, path, trialNum, idString] = getDataFileName(exptInfo)
     dateString = [ '_' datestr(now, format) ]; % today's date ie '_161014'
     
         % Put together path name and fileNamePreamble  
-    path = [settings.dataDirectory ,prefixCode,'\expNum',eNum,...
+    path = [rigSettings.dataDirectory ,prefixCode,'\expNum',eNum,...
         '\flyNum',fNum, dateString, '\cellNum',cNum,'\','cellExpNum',cENum,'\'];
         
     fileNamePreamble = [prefixCode,'_expNum',eNum,...

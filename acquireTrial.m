@@ -26,12 +26,12 @@ ephysSettings;
 
 % Determine trial duration and build default stimulus command 
 if exist('stimulus','var')
-    trialDurSec = length(stimulus.command) / settings.sampRate; % sec
+    trialDurSec = length(stimulus.command) / rigSettings.sampRate; % sec
 else
-    trialDurSec = settings.defaultTrialDur; % sec
+    trialDurSec = rigSettings.defaultTrialDur; % sec
 
     % Create a default and empty command signal if one was not specified:
-    stimulus.command = zeros( 1, settings.defaultTrialDur * settings.sampRate );
+    stimulus.command = zeros( 1, rigSettings.defaultTrialDur * rigSettings.sampRate );
     stimulus.name = 'No Stimulus';
 end
 
@@ -40,9 +40,9 @@ end
 
 %% Set up DAQ session
 nidaq = daq("ni"); % create daq object
-nidaq.Rate = settings.sampRate; % set aquisition rate
-addinput(nidaq, settings.devID, "ai0", "Voltage"); % add primary channel
-addinput(nidaq, settings.devID, "ai1", "Voltage"); % add secondary channel
+nidaq.Rate = rigSettings.sampRate; % set aquisition rate
+addinput(nidaq, rigSettings.devID, "ai0", "Voltage"); % add primary channel
+addinput(nidaq, rigSettings.devID, "ai1", "Voltage"); % add secondary channel
 
 % TODO add output channel logic for commands or other signals 
 
@@ -54,8 +54,8 @@ rawData = read(nidaq, seconds(trialDurSec)); %TODO update to readwrite once add 
 
 %% Process and scale data
 % code assumes that all modes of Multiclamp 700b have primary=membrane potential & secondary=membrane current'
-data.voltage = rawData.Dev1_ai0 * settings.voltage.softGain_mV; % convert to mV
-data.current = rawData.Dev1_ai1 * settings.current.softGain_pA; % convert to pA
+data.voltage = rawData.Dev1_ai0 * rigSettings.voltage.softGain_mV; % convert to mV
+data.current = rawData.Dev1_ai1 * rigSettings.current.softGain_pA; % convert to pA
 
 %% %% Process X and Y stimulus information from the Panel system
 % % AND save the ficTrac ball position information for later
@@ -109,7 +109,7 @@ end
       copyFramesToTrialFolder( exptInfo, trialMeta );
  end
 %% Online plotting of data
-plotTrialData( data, stimulus, settings ); % plot the trial that was just aquired for the user to sre
+plotTrialData( data, stimulus, rigSettings ); % plot the trial that was just aquired for the user to sre
 
 
 %% Pause code to view plots

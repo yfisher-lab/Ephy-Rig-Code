@@ -7,7 +7,7 @@ and then use to calculate the pipette (or seal resistance) and also saves
 that trace obtains from the recording
 
 By default (set in acquireTrial) this will run of the time period specified by: 
-settings.sealTest.Dur
+rigSettings.sealTest.Dur
 
 INPUT
 exptInfo (struct)
