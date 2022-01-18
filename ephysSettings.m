@@ -9,7 +9,7 @@
 %% Parameters
 
 % Data folder
-dataDirectory = 'C:\Users\fisherlab\Documents\EphyData\'; % 
+settings.dataDirectory = 'C:\Users\fisherlab\Documents\EphyData\'; % 
 
 % Device
 settings.devID = 'Dev1'; %for NI PCIe-6351
