@@ -36,8 +36,8 @@ nidaq.Channels(2).TerminalConfig = 'SingleEnded'; % save information that channe
 data = read(nidaq, seconds(settings.durSeconds));
 
 % store current and voltage values in useful units
-current_pA = (data.Dev1_ai0*PICOAMP_PER_NANOAMP) / settings.membraneCurrentGain; %pAmp
-voltage_mV = (data.Dev1_ai1*MiliVOLTS_PER_VOLT) / settings.membranePotentialGain; % mV
+current_pA = (data.Dev1_ai1*PICOAMP_PER_NANOAMP) / settings.membraneCurrentGain; %pAmp
+voltage_mV = (data.Dev1_ai0*MiliVOLTS_PER_VOLT) / settings.membranePotentialGain; % mV
 
 %% Plot recorded V-Clamp data %%
 figure; %create figure
