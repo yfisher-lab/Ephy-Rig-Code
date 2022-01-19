@@ -50,7 +50,7 @@ ephysSettings;
 TRIAL_DURATION = 15; %seconds
 
 fprintf('Running the no injection 15 second function');
-out = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
+out.command = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
 end
 
 %% step
@@ -69,7 +69,7 @@ stepCommand = STEP_AMP * ones( 1, STEP_DURATION * rigSettings.sampRate );
 
 injectionCommand = [preStepCommand stepCommand];
 
-out = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 end
 
 %% stepLoop
@@ -90,7 +90,7 @@ for i = 1: reps
     injectionCommand = [injectionCommand preStepCommand stepCommand];
 end
 
-out = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 end
 
 function [] = plotCommandSignals( stimulus )
