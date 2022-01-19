@@ -41,7 +41,7 @@ lengthOfShorterArray = min([ length( voltageStepUpInd) ,length( voltageStepDownI
 % Find average pulse duration
 meanPulseFrameNum = mean( voltageStepUpInd(1 :lengthOfShorterArray) - voltageStepDownInd (1:lengthOfShorterArray) );
 
-% Round to integer and make positive, time 2 to include up and down pulse
+% Round to integer and make positive, times 2 to include up and down pulse
 meanPulseFrameNum = 2 * abs( round (meanPulseFrameNum));
 
 %% debugging plots

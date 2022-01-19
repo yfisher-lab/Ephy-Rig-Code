@@ -41,6 +41,9 @@ troughStart = pulseEnd + 1;
 troughEnd = allPulseStarts(2) -3 ;
 troughMid = round(troughEnd - ((troughEnd - troughStart)/2));
 
+%% TODO fix this logic so that it uses more that a single part of the trace!!!
+% maybe copy from access test
+
 peakCurrent = mean(data.current(pulseMid:pulseEnd));
 peakVoltage = mean(data.voltage(pulseMid:pulseEnd));
 baselineCurrent = mean(data.current(troughMid:troughEnd));

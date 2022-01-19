@@ -40,7 +40,7 @@ rigSettings.voltage.amplifierGain = 10; % 10mV/mV
 rigSettings.voltage.softGain_mV = MiliVOLTS_PER_VOLT / rigSettings.voltage.amplifierGain; % mV
 
 
-rigSettings.command.currentClampExternalCommandGain = 1/400; % V/pA  note:400 pA/V is set in Gain menu on 700b mulitclamp
+rigSettings.command.currentClampCoversionGain
 % TODO add logic for current injection with analog output and scaling
 % factors
 
