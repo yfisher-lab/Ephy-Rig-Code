@@ -114,15 +114,15 @@ if nargin ~= 0
     % save data, stimlulus command, and other info
      save(fileName, 'data','trialMeta','stimulus','exptInfo');
      disp( ['.... Trial # ' num2str( trialMeta.trialNum )   ' was Saved!'] );
+
+    % Online plotting of data (doesn't plot seal test trials)
+    plotTrialData( data, stimulus, rigSettings ); % plot the trial that was just aquired for the user to see
 end
 
 %% If there was a movie aquired then: %% Copy movies into trial folder within tmp video aqu.
  if ( isfield( stimulus, 'cameraTrigger') )
       copyFramesToTrialFolder( exptInfo, trialMeta );
  end
-%% Online plotting of data
-plotTrialData( data, stimulus, rigSettings ); % plot the trial that was just aquired for the user to sre
-
 
 %% Pause code to view plots
 % % make it so that the code pauses so I can look at the figure of data, but

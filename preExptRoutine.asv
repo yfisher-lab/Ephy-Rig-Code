@@ -67,7 +67,6 @@ while 1
     end
 end
 
-close all % close figures so they don't build up
 
 %% Measure voltage trial to look at cell attached spikes
 contAns = input('\n\n Would you like to run a trial in V-clamp to measure cell attached spikes? ','s');
@@ -86,8 +85,8 @@ if strcmp(contAns,'y')
     save(filename,'data','exptInfo','trialMeta');
 end
 
-close all % close figures so they don't build up
 
+close all % close figures so they don't build up
 %% Measure access and input resistance and holding current
 while 1
     contAns = input('\n\n Would you like to measure access resistance? ','s');

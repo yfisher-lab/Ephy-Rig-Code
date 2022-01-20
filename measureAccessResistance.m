@@ -44,14 +44,14 @@ meanPulseFrameNum = mean( voltageStepUpInd(1 :lengthOfShorterArray) - voltageSte
 
 % Round to integer and make positive, times 2 to include up and down pulse
 meanPulseFrameNum = 2 * abs( round (meanPulseFrameNum));
-
-%% debugging plots
-figure(88)
-plot(voltage); hold on;
-scatter(voltageStepUpInd', -0.5 * ones(1, length(voltageStepUpInd))); hold on 
-scatter(voltageStepDownInd', -0.5 * ones(1, length(voltageStepDownInd)))
-plot(currentZeroed)
-%%
+% 
+% %% debugging plots
+% figure(88)
+% plot(voltage); hold on;
+% scatter(voltageStepUpInd', -0.5 * ones(1, length(voltageStepUpInd))); hold on 
+% scatter(voltageStepDownInd', -0.5 * ones(1, length(voltageStepDownInd)))
+% plot(currentZeroed)
+% %%
 
 FIRST_PULSE_TO_USE = 2; % start on second pulse incase first pulse has aberation
 LAST_PULSE_TO_USE = length(voltageStepUpInd) - 1;  % skip last pulse incase it is too short.
