@@ -93,7 +93,6 @@ LINE_THICKNESS = 4;
 set( h,'linewidth', LINE_THICKNESS) 
 
 % Find peak Current response to the seal pulse
-%peakCurrent = abs( min( meanCurrentRespCorrectBaseline )); % pA
 peakCurrent = max( meanCurrentRespCorrectBaseline ); % pA
 
 % Extract a steady state region of the current and voltage traces

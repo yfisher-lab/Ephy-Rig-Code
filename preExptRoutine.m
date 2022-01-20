@@ -33,7 +33,7 @@ ephysSettings
 
 %% Measure pipette resistance
 while 1
-    contAns = input('\n\n Would you like to measure pipette resistance? (Voltage clamp, y/enter = yes, n = no) ','s');
+    contAns = input('\n\n Would you like to measure pipette resistance? (y/enter = yes, n = no) ','s');
     if strcmp(contAns,'y') || strcmp(contAns,'') % 'y' or enter
         type = 'pipette';
         preExptData.pipetteResistance = measurePipetteResistance(exptInfo,type);
@@ -50,7 +50,16 @@ while 1
 end
 
 %% Measure seal resistance
-contAns = input('\n\n Would you like to measure seal resistance?  Voltage Clamp ','s');
+
+
+
+
+
+
+
+
+%%
+contAns = input('\n\n Would you like to measure seal resistance? ','s');
 if strcmp(contAns,'y')
     type = 'seal';
     preExptData.sealResistance = measurePipetteResistance(exptInfo,type);

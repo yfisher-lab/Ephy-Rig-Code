@@ -17,47 +17,111 @@ OUTPUT
 pipetteResistance (MOhms)
 
 %}
-[data,trialMeta] = acquireTrial(); 
+[data,trialMeta] = acquireTrial();% sample a quick trial of the seal test
 
-% logical array for when voltage is above the mean
-highVoltageLog1 = data.voltage > mean(data.voltage);
+current = data.current;
+voltage = data.voltage;
 
-%steps 'up' from 0 to 1 find all of the starts of the pulse
-allPulseStarts = strfind(highVoltageLog1',[0 1]);
-pulseStart = allPulseStarts(1) + 1;
+% solve for holding current
+holdingCurrent = mean(current);
 
-% steps 'down' from 1 to 0 to find all of the ends of pulse 
-allPulseEnds = strfind(highVoltageLog1',[1 0]);
-pulseEnd = allPulseEnds(1);
+% set current to where average is zero
+currentZeroed = current - holdingCurrent;
+voltageZeroed = voltage - mean(voltage);
 
-if pulseEnd < pulseStart
-    pulseEnd = allPulseEnds(2);
+% find out when the voltage is above (1) and below (0) the mean value.
+pulseOn =  voltage > mean(voltage);
+
+% Extract the indexes where voltage steps Up or Down
+voltageStepUpInd = find( diff(pulseOn) == 1);
+voltageStepDownInd = find( diff(pulseOn) == -1);
+
+lengthOfShorterArray = min([ length( voltageStepUpInd) ,length( voltageStepDownInd) ]); 
+
+% Find average pulse duration
+meanPulseFrameNum = mean( voltageStepUpInd(1 :lengthOfShorterArray) - voltageStepDownInd (1:lengthOfShorterArray) );
+
+% Round to integer and make positive, times 2 to include up and down pulse
+meanPulseFrameNum = 2 * abs( round (meanPulseFrameNum));
+
+%% debugging plots
+figure(88)
+plot(voltage); hold on;
+scatter(voltageStepUpInd', -0.5 * ones(1, length(voltageStepUpInd))); hold on 
+scatter(voltageStepDownInd', -0.5 * ones(1, length(voltageStepDownInd)))
+plot(currentZeroed)
+%%
+
+FIRST_PULSE_TO_USE = 2; % start on second pulse incase first pulse has aberation
+LAST_PULSE_TO_USE = length(voltageStepUpInd) - 1;  % skip last pulse incase it is too short.
+counter = 1;
+
+for i = FIRST_PULSE_TO_USE: LAST_PULSE_TO_USE 
+    
+    %Store current trace for each pulse in this array
+    allCurrentResp(:,counter) = currentZeroed( voltageStepUpInd(i) : voltageStepUpInd(i) + meanPulseFrameNum);
+    allVoltageResp(:,counter) = voltageZeroed( voltageStepUpInd(i) : voltageStepUpInd(i) + meanPulseFrameNum);
+    counter = counter + 1;
+end
+% Get mean current trace
+meanCurrentResp = mean(allCurrentResp');
+meanVoltageResp = mean(allVoltageResp');
+
+%Find the baseline period current for the mean response trace:
+ START_OF_BASELINE_TRACE = 6/8; % extract starting baseline period of the trace
+ END_OF_BASELINE_TRACE = 7/8;
+% 
+ startBaselineIndex = round( meanPulseFrameNum* START_OF_BASELINE_TRACE);
+ endBaselineIndex = round( meanPulseFrameNum* END_OF_BASELINE_TRACE) - 1;
+% 
+ baselineCurrent = mean(meanCurrentResp( startBaselineIndex : endBaselineIndex ));
+ baselineVoltage = mean(meanVoltageResp( startBaselineIndex : endBaselineIndex ));
+
+meanCurrentRespCorrectBaseline = meanCurrentResp - baselineCurrent;
+meanVoltageRespCorrectBaseline = meanVoltageResp - baselineVoltage;
+allCurrentRespCorrectBaseline = allCurrentResp - baselineCurrent;
+
+% plot current traces for user to see
+figure(); 
+plot( allCurrentRespCorrectBaseline ); hold on;
+plot( meanVoltageRespCorrectBaseline ); hold on;
+h = plot( meanCurrentRespCorrectBaseline); hold on;
+
+% make mean trace line thick
+LINE_THICKNESS = 4;
+set( h,'linewidth', LINE_THICKNESS) 
+
+% Find peak Current response to the seal pulse
+peakCurrent = max( meanCurrentRespCorrectBaseline ); % pA
+
+% Extract a steady state region of the current and voltage traces
+START_OF_STEADYSTATE_TRACE = 2/8; % good steady state location
+END_OF_STEADYSTATE_TRACE = 3/8;
+
+startSteadyStateIndex = round( meanPulseFrameNum* START_OF_STEADYSTATE_TRACE);
+endSteadyStateIndex = round( meanPulseFrameNum* END_OF_STEADYSTATE_TRACE);
+
+steadyStateCurrentAmp = abs( mean( meanCurrentRespCorrectBaseline(startSteadyStateIndex:endSteadyStateIndex)));
+steadyStateVoltageAmp = abs( mean( meanVoltageRespCorrectBaseline(startSteadyStateIndex:endSteadyStateIndex)));
+
+%% Calculate seal test amplitude using steady state voltage value
+sealTestAmplitude = steadyStateVoltageAmp; % mV
+disp(['Seal test amplitude decoded as: ' num2str(sealTestAmplitude) 'mV']);
+
+ephysSettings;
+rigSettings.defaultSealTestAmplitude = 10; % mV, this is 700b multiclamp default
+
+if (rigSettings.defaultSealTestAmp-1 > sealTestAmplitude || sealTestAmplitude > rigSettings.defaultSealTestAmp+1)
+    warning('Decoded seal test value is outside of the expected default ranage, check 700b multiclamp settings' )
 end
 
-pulseEnd = pulseEnd - 3;
-pulseMid = round(pulseEnd - ((pulseEnd - pulseStart)/2));
-
-troughStart = pulseEnd + 1;
-troughEnd = allPulseStarts(2) -3 ;
-troughMid = round(troughEnd - ((troughEnd - troughStart)/2));
-
-%% TODO fix this logic so that it uses more that a single part of the trace!!!
-% maybe copy from access test
-
-peakCurrent = mean(data.current(pulseMid:pulseEnd));
-peakVoltage = mean(data.voltage(pulseMid:pulseEnd));
-baselineCurrent = mean(data.current(troughMid:troughEnd));
-baselineVoltage = mean(data.voltage(troughMid:troughEnd));
-
-voltDiff = peakVoltage - baselineVoltage; % delta voltage 
-currDiff = peakCurrent - baselineCurrent; % delta current
-
+%% Calculate pipette Resistance using steady state current value %%
 VOLTS_PER_MiliVOLTS = 1e-3; % V /1000 mV
 AMPS_PER_pA = 1e-12; % 1e-12 A / 1 pA
 MEGAOHM_PER_OHM = 1e-6; % 1 MOhm / 1e6 Ohm
 
-%calculates pipette resistance using change in Voltage and change in Current
-pipetteResistance = ((voltDiff*VOLTS_PER_MiliVOLTS)/(currDiff*AMPS_PER_pA))*MEGAOHM_PER_OHM;  %(MOhms)
+pipetteResistance = ((sealTestAmplitude * VOLTS_PER_MiliVOLTS) / (steadyStateCurrentAmp * AMPS_PER_pA)) * MEGAOHM_PER_OHM; % MOhms
+
 
 if nargin ~= 0
     [~, path, ~, idString] = getDataFileName(exptInfo);
