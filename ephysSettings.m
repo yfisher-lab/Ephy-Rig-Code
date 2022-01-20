@@ -39,6 +39,8 @@ MiliVOLTS_PER_VOLT = 1000; % 1000 mV/V
 rigSettings.voltage.amplifierGain = 10; % 10mV/mV 
 rigSettings.voltage.softGain_mV = MiliVOLTS_PER_VOLT / rigSettings.voltage.amplifierGain; % mV
 
+rigSettings.defaultSealTestAmp = 10; % mV, this is 700b multiclamp default
+
 
 rigSettings.command.currentClampExternalCommandGain = 1/400; % V/pA  note:400 pA/V is set in Gain menu on 700b mulitclamp
 % TODO add logic for current injection with analog output and scaling

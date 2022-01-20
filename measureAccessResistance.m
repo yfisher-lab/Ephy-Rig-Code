@@ -28,6 +28,7 @@ holdingCurrent = mean(current);
 
 % set current to where average is zero
 currentZeroed = current - holdingCurrent;
+voltageZeroed = voltage - mean(voltage);
 
 % find out when the voltage is above (1) and below (0) the mean value.
 pulseOn =  voltage > mean(voltage);
@@ -60,55 +61,70 @@ for i = FIRST_PULSE_TO_USE: LAST_PULSE_TO_USE
     
     %Store current trace for each pulse in this array
     allCurrentResp(:,counter) = currentZeroed( voltageStepUpInd(i) : voltageStepUpInd(i) + meanPulseFrameNum);
+    allVoltageResp(:,counter) = voltageZeroed( voltageStepUpInd(i) : voltageStepUpInd(i) + meanPulseFrameNum);
     counter = counter + 1;
 end
 % Get mean current trace
 meanCurrentResp = mean(allCurrentResp');
+meanVoltageResp = mean(allVoltageResp');
 
 %Find the baseline period current for the mean response trace:
- START_OF_BASELINE_TRACE = 1/6; % extract starting baseline period of the trace
- END_OF_BASELINE_TRACE = 2/6;
+ START_OF_BASELINE_TRACE = 6/8; % extract starting baseline period of the trace
+ END_OF_BASELINE_TRACE = 7/8;
 % 
  startBaselineIndex = round( meanPulseFrameNum* START_OF_BASELINE_TRACE);
  endBaselineIndex = round( meanPulseFrameNum* END_OF_BASELINE_TRACE) - 1;
 % 
  baselineCurrent = mean(meanCurrentResp( startBaselineIndex : endBaselineIndex ));
+ baselineVoltage = mean(meanVoltageResp( startBaselineIndex : endBaselineIndex ));
 
 meanCurrentRespCorrectBaseline = meanCurrentResp - baselineCurrent;
+meanVoltageRespCorrectBaseline = meanVoltageResp - baselineVoltage;
 allCurrentRespCorrectBaseline = allCurrentResp - baselineCurrent;
 
 % plot current traces for user to see
 figure(); 
 plot( allCurrentRespCorrectBaseline ); hold on;
-h = plot( meanCurrentRespCorrectBaseline);
+plot( meanVoltageRespCorrectBaseline ); hold on;
+h = plot( meanCurrentRespCorrectBaseline); hold on;
 
 % make mean trace line thick
 LINE_THICKNESS = 4;
 set( h,'linewidth', LINE_THICKNESS) 
 
-
-% Find peak Current response to the -5mV pulse
+% Find peak Current response to the seal pulse
 peakCurrent = abs( min( meanCurrentRespCorrectBaseline )); % pA
 
-% Solve for acccessResistance using peak current value
-VOLTAGE_STEP_AMP = 5; %mV  (seal test from the amplifier)
-VOLTS_PER_MiliVOLTS = 1e-3; % V /1000 mV
-AMPS_PER_pA = 1e-12; % 1e-12 A / 1 pA
-MEGAOHM_PER_OHM = 1e-6; % 1 MOhm / 1e6 Ohm
-
-accessResistance = ((VOLTAGE_STEP_AMP * VOLTS_PER_MiliVOLTS) / (peakCurrent * AMPS_PER_pA)) * MEGAOHM_PER_OHM; % MOhms
-
-% Extract a steady state region of the trace
-START_OF_STEADYSTATE_TRACE = 4/6; % extract middle 1/3 of trace
-END_OF_STEADYSTATE_TRACE = 5/6;
+% Extract a steady state region of the current and voltage traces
+START_OF_STEADYSTATE_TRACE = 2/8; % good steady state location
+END_OF_STEADYSTATE_TRACE = 3/8;
 
 startSteadyStateIndex = round( meanPulseFrameNum* START_OF_STEADYSTATE_TRACE);
 endSteadyStateIndex = round( meanPulseFrameNum* END_OF_STEADYSTATE_TRACE);
 
-steadyStateCurrentAmp = abs( mean( meanCurrentRespCorrectBaseline (startSteadyStateIndex:endSteadyStateIndex)));
+steadyStateCurrentAmp = abs( mean( meanCurrentRespCorrectBaseline(startSteadyStateIndex:endSteadyStateIndex)));
+steadyStateVoltageAmp = abs( mean( meanVoltageRespCorrectBaseline(startSteadyStateIndex:endSteadyStateIndex)));
 
-%solve for the input resistance using steady state current
-inputResistance = ((VOLTAGE_STEP_AMP * VOLTS_PER_MiliVOLTS) / (steadyStateCurrentAmp * AMPS_PER_pA)) * MEGAOHM_PER_OHM; % MOhms
+%% Calculate seal test amplitude using steady state voltage value
+sealTestAmplitude = steadyStateVoltageAmp; % mV
+disp(['Seal test amplitude decoded as: ' num2str(sealTestAmplitude) 'mV']);
+
+ephysSettings;
+rigSettings.defaultSealTestAmplitude = 10; % mV, this is 700b multiclamp default
+
+if (rigSettings.defaultSealTestAmp-1 > sealTestAmplitude || sealTestAmplitude > rigSettings.defaultSealTestAmp+1)
+    warning('Decoded seal test value is outside of the expected default ranage, check 700b multiclamp settings' )
+end
+
+%% Calculate accessResistance using peak current value %%
+VOLTS_PER_MiliVOLTS = 1e-3; % V /1000 mV
+AMPS_PER_pA = 1e-12; % 1e-12 A / 1 pA
+MEGAOHM_PER_OHM = 1e-6; % 1 MOhm / 1e6 Ohm
+
+accessResistance = ((sealTestAmplitude * VOLTS_PER_MiliVOLTS) / (peakCurrent * AMPS_PER_pA)) * MEGAOHM_PER_OHM; % MOhms
+
+%% Calculate inputResistance using steady state current value %%
+inputResistance = ((sealTestAmplitude * VOLTS_PER_MiliVOLTS) / (steadyStateCurrentAmp * AMPS_PER_pA)) * MEGAOHM_PER_OHM; % MOhms
 
 
 % Save
