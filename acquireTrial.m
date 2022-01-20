@@ -65,9 +65,9 @@ trialMeta.trialStartTime = datestr(now,'HH:MM:SS'); % record Trial time for reco
 rawData = readwrite(nidaq, outputMatrix);
 
 %% Process and scale data
-% code assumes that all modes of Multiclamp 700b have primary=membrane potential & secondary=membrane current'
-data.voltage = rawData.Dev1_ai0 * rigSettings.voltage.softGain_mV; % convert to mV
-data.current = rawData.Dev1_ai1 * rigSettings.current.softGain_pA; % convert to pA
+% code assumes that all modes of Multiclamp 700b have primary=membrane current & secondary=membrane potential
+data.current = rawData.Dev1_ai0 * rigSettings.current.softGain_pA; % convert to pA
+data.voltage = rawData.Dev1_ai1 * rigSettings.voltage.softGain_mV; % convert to mV
 
 %% %% Process X and Y stimulus information from the Panel system
 % % AND save the ficTrac ball position information for later
