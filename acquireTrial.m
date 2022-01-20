@@ -53,6 +53,10 @@ nidaq.Channels(2).TerminalConfig = 'SingleEnded'; % Set channel to single ended 
 % Specify scan data as an MxN double matrix, where M is the number of scans and N is the number of output channels.
 outputMatrix = stimulus.command'; %each commmand needs to be a collumn vector
 
+outputMatrix = makeFinalSignalsZerosForAllCommandChannels( outputMatrix ); 
+% Note: DAQRESET does not reset the data acquisition hardware. It resets
+% the DAQ Engine so this is needed to make sure the outputs returns to zero
+
 % TODO add more logic here to combine other arrays as more output signals are needed.....
 
 %% Aquire data (read and write in forground)
@@ -126,7 +130,7 @@ plotTrialData( data, stimulus, rigSettings ); % plot the trial that was just aqu
  if (~strcmp (stimulus.name, 'No Stimulus'))
     
 keyboard;
- end
+end
 
 end
 

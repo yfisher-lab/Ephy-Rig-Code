@@ -39,6 +39,7 @@ nidaq.Channels(2).TerminalConfig = 'SingleEnded'; % save information that channe
 [OutputArray]= makeInjectionWaveform (10,1,1,1,nidaq.Rate,settings.ExternalCommandSensitivity)'; %InjpA,BaselineDuration(s),PulseDuration(s),PostPulseDuration(s),Rate(Hz),amplitudeGain(XXXX)
 data = readwrite(nidaq,OutputArray);
 
+
 %% Aquire trial
 %data = read(nidaq, seconds(3));
 
