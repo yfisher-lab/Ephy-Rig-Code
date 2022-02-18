@@ -23,7 +23,7 @@ All of these subfields are obtained from the user and saved
 %}
 
 %% Ask user for input
-FlyData.line = input('Line: ','s');
+FlyData.line = input('Fly Line: ','s');
 FlyData.notesOnDissection = input('Notes on dissection: ','s');
 FlyData.prepType = input('Prep type: ','s');
 

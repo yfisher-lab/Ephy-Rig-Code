@@ -12,7 +12,9 @@ while 1
     GETSTIMULUSNAME = true;
     while(GETSTIMULUSNAME)
 
-        prompt = ['Which stimulus would you like to run? Options:q,step(amp,dur),stepLoop(amp,dur,reps) n=exit: '];
+        prompt = ['Which stimulus would you like to run? Options:q,step(amp,dur),stepLoop(amp,dur,reps),\n' ...
+            'noCurrent(dur),makeInjectionWaveform(InjpA,BaseDur,PulseDur,PostDur),\n' ...
+            'summation(X,Y,Z,BaseDur,PulseDur,PostDur), wholeProtocol(X,Y,Z,BaseDur,PulseDur,PostDur), n=exit: '];
         % Ask user for stimulus command to run
         choosenStimulus = input( prompt, 's');
 
@@ -53,8 +55,110 @@ fprintf('Running the no injection 15 second function');
 out.command = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
 end
 
+%% WRITE NEW FUCNTION HERE!!! with any inputs you like and out.command as the output for current injections in voltage correctly correspoding to the external output current
+function [out]= makeInjectionWaveform (InjpA,BaseDur,PulseDur,PostDur)
+%Injects Current for given Duration(s)
+ephysSettings;
+% makeInjectionWaveform function to inject current
+InjectionBaseSamples = rigSettings.sampRate*BaseDur; % Hz=samples/sec
+InjectionPulseSamples = rigSettings.sampRate*PulseDur;
+InjectionPostSamples = rigSettings.sampRate*PostDur;
+
+%Volts = ampGain*(InjpA/1000); %Voltage injection (1nA=1000pA)
+%Volts = InjpA/ampGain;
+
+Array_Base = [zeros(1,InjectionBaseSamples)]; %array Baseline values 0pA
+Array_Inj = InjpA*[ones(1,InjectionPulseSamples)]; %array Injection Voltage values ?pA
+Array_Post = [zeros(1,InjectionPostSamples)]; %array Post-injection values 0pA
+fprintf('Running the single set current injection protocol');
+out.command = [Array_Base,Array_Inj,Array_Post] * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+end
+%% Inject step current
+function [out] = summation(X,Y,Z,BaseDur,PulseDur,PostDur) %where x,y,z is current injected and by what steps
+% Syntax
+ephysSettings;
+InjectionBaseSamples = rigSettings.sampRate*BaseDur; % Hz=samples/sec
+InjectionPulseSamples = rigSettings.sampRate*PulseDur;
+InjectionPostSamples = rigSettings.sampRate*PostDur;
+% Initilising loop to be zero
+Voltstep = 0;
+CurrentToInject = X:Y:Z;
+stepArray = [];
+for i = 1:length(CurrentToInject)
+    % loop
+    %Voltstep = CurrentToInject(i)/ampGain;
+
+    Array_Base = [zeros(1,InjectionBaseSamples)]; %array Baseline values 0pA
+    Array_Inj = CurrentToInject(i)*[ones(1,InjectionPulseSamples)]; %array Injection Voltage values ?pA
+    Array_Post = [zeros(1,InjectionPostSamples)]; %array Post-injection values 0pA
+
+    stepArray = [stepArray, Array_Base,Array_Inj,Array_Post];
+   
+end
+
+fprintf('Running the multiple current injection protocol');
+out.command = stepArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+end
+
+%% Inject Step Current multiple times throughout run
+
+%15-20 minute run with baseline and step Current recordings; add ATP around
+%the 4 minute mark
+function [out] = wholeProtocol(X,Y,Z,BaseDur,PulseDur,PostDur) %where x,y,z is current injected and by what steps
+%BaseDur and PostDur at 60 seconds = T(2n+1) where n is sec base and T is
+%number of current injections
+% Syntax
+ephysSettings;
+%All the noCurrent baseline variables
+BaselineOne = rigSettings.sampRate*60; % Hz=samples/sec; set as 60s
+BaselineTwo = rigSettings.sampRate*180; % Hz=samples/sec; set as 120s
+postOne = rigSettings.sampRate*360; % Hz=samples/sec; set as 420 (8min)
+postTwo = rigSettings.sampRate*120; % Hz=samples/sec; set as 120s
+
+%Injection baseline variables
+InjectionBaseSamples = rigSettings.sampRate*BaseDur; % Hz=samples/sec
+InjectionPulseSamples = rigSettings.sampRate*PulseDur;
+InjectionPostSamples = rigSettings.sampRate*PostDur;
+
+%NoCurrent zeroArrays
+Array_BaselineOne = [zeros(1,BaselineOne)]; %array Baseline values 0pA
+Array_BaselineTwo = [zeros(1,BaselineTwo)]; %array Baseline values 0pA
+Array_postOne = [zeros(1,postOne)]; %array Baseline values 0pA
+Array_postTwo = [zeros(1,postTwo)]; %array Baseline values 0pA
+
+% Initilising loopBaseline to be zero
+Voltstep = 0;
+CurrentToInject = X:Y:Z;
+stepArray = [];
+for i = 1:length(CurrentToInject)
+    % loop
+    %Voltstep = CurrentToInject(i)/ampGain;
+
+    Array_Base = [zeros(1,InjectionBaseSamples)]; %array Baseline values 0pA
+    Array_Inj = CurrentToInject(i)*[ones(1,InjectionPulseSamples)]; %array Injection Voltage values ?pA
+    Array_Post = [zeros(1,InjectionPostSamples)]; %array Post-injection values 0pA
+
+    stepArray = [stepArray, Array_Base,Array_Inj,Array_Post];
+   
+end
+finalArray = [Array_BaselineOne stepArray Array_BaselineTwo stepArray Array_postOne stepArray Array_postTwo];
+fprintf('Running the 15-20 minute multiple current injection protocol');
+out.command = finalArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+end
+
+%% noCurrent(dur)
+function [out] = noCurrent(dur)
+% quick function that records for 15 seconds
+ephysSettings;
+% trial duration
+TRIAL_DURATION = dur; %seconds
+
+fprintf('Running the no injection 15 second function');
+out.command = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
+end
+
 %% step
-function [out] = step ( amp, dur )
+function [out] = step( amp, dur )
 % step runs a quick trial with a single step of
 % amp = amplitude of the step in pA
 % dur = durations of the step in seconds
@@ -93,6 +197,7 @@ end
 out.command = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 end
 
+%% 
 function [] = plotCommandSignals( stimulus )
 % PLOTCOMMANDSIGNALS Plotting helper function
 % Takes stimulus and parces which of these is an array

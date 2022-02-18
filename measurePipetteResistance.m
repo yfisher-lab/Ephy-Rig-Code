@@ -109,8 +109,8 @@ sealTestAmplitude = steadyStateVoltageAmp; % mV
 disp(['Seal test amplitude decoded as: ' num2str(sealTestAmplitude) 'mV']);
 
 ephysSettings;
-rigSettings.defaultSealTestAmplitude = 10; % mV, this is 700b multiclamp default
 
+% 10 mV is 700b multiclamp default
 if (rigSettings.defaultSealTestAmp-1 > sealTestAmplitude || sealTestAmplitude > rigSettings.defaultSealTestAmp+1)
     warning('Decoded seal test value is outside of the expected default ranage, check 700b multiclamp settings' )
 end

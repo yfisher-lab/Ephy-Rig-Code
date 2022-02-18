@@ -129,7 +129,7 @@ end
 % % only if we are NOT doing a the seal test where the stim is named No Stimulus
  if (~strcmp (stimulus.name, 'No Stimulus'))
     
-keyboard;
+%keyboard;
 end
 
 end

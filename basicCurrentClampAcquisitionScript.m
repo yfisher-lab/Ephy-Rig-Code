@@ -36,8 +36,11 @@ nidaq.Channels(1).TerminalConfig = 'SingleEnded'; % save information that channe
 nidaq.Channels(2).TerminalConfig = 'SingleEnded'; % save information that channel is in single ended on BOB
 
 % add in logic for current injection patterns
-[OutputArray]= makeInjectionWaveform (10,1,1,1,nidaq.Rate,settings.ExternalCommandSensitivity)'; %InjpA,BaselineDuration(s),PulseDuration(s),PostPulseDuration(s),Rate(Hz),amplitudeGain(XXXX)
-data = readwrite(nidaq,OutputArray);
+%[OutputArray]= makeInjectionWaveform (10,1,1,1,nidaq.Rate,settings.ExternalCommandSensitivity)'; %InjpA,BaselineDuration(s),PulseDuration(s),PostPulseDuration(s),Rate(Hz),amplitudeGain(XXXX)
+%data = readwrite(nidaq,OutputArray);
+
+[stepArray] = summation(0,10,50,1,1,1,nidaq.Rate,settings.ExternalCommandSensitivity)
+%data = readwrite(nidaq,stepArray);
 
 
 %% Aquire trial

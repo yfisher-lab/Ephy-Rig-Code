@@ -1,5 +1,5 @@
 function runExpt(prefixCode,expNum,stimSetType)
-%RUNEXPT master function that runs the Ephy acquisition
+%RUNEXPT main function that runs the Ephy acquisition
 %
 % RUNEXPT('ExperimentName',expNUM,stimSetNum) runs an experiment with prefix
 % code 'ExperimentName' and experiment number expNUM that uses the stimlulus
@@ -18,6 +18,7 @@ function runExpt(prefixCode,expNum,stimSetType)
 %
 % Example
 % runExpt('test',1,'currentInjections')
+% runExpt('test',1,'frodoProtocols')
 % This would runs an experiment with a prefix code 'test'
 % and experiment number 1 which means the data is saved in a
 % folder called ~\Data\ephysData\test\expNum001
