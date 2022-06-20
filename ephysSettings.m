@@ -41,8 +41,15 @@ rigSettings.voltage.softGain_mV = MiliVOLTS_PER_VOLT / rigSettings.voltage.ampli
 
 rigSettings.defaultSealTestAmp = 10; % mV, this is 700b multiclamp default
 
-
+% COMMAND output information
 rigSettings.command.currentClampExternalCommandGain = 1/400; % V/pA  note:400 pA/V is set in Gain menu on 700b mulitclamp
+rigSettings.command.measurementType = "Voltage";
+rigSettings.command.channelID = "ao0";
+
+% LED output information
+rigSettings.LEDcommand.measurementType = "Digital";
+rigSettings.LEDcommand.channelID = "port0/line0";
+
 % TODO add logic for current injection with analog output and scaling
 % factors
 

@@ -1,0 +1,27 @@
+function [out] = buildOutputSignal(name,output)
+%BUILDOUTPUTSIGNAL Summary of this function goes here
+%
+% INPUTS
+% name - string that is the name out the type of output
+% output - array that contains the data set to be used
+%
+% OUTPUT
+% out.[name]daqtype
+%
+%
+%   Detailed explanation goes here
+ephysSettings;
+
+% check ephysetting variables for the infromation about where these signals
+% should be sent on the nidaq, if can't find throw an error...
+
+
+out.daqoutput = rigSettings.command.daqoutput; % TODO update ephy setting to have this information stored
+out.
+
+% 
+out.name = name;
+out.output = output;
+out = [];
+
+end

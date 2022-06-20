@@ -81,10 +81,7 @@ rawData = readwrite(nidaq, outputMatrix);
 % code assumes that all modes of Multiclamp 700b have primary=membrane current & secondary=membrane potential
 data.current = rawData.Dev1_ai0 * rigSettings.current.softGain_pA; % convert to pA
 data.voltage = rawData.Dev1_ai1 * rigSettings.voltage.softGain_mV; % convert to mV
-
-% TODO write a funciton that loop over nidaq and save all fields into a sub
-% field within Stimulus.nidaq
-
+data.nidaqChannels = nidaq.Channels; % save all the nidaq settings and output information
 
 %% %% Process X and Y stimulus information from the Panel system
 % % AND save the ficTrac ball position information for later
@@ -130,6 +127,9 @@ if nargin ~= 0
     
     % save data, stimlulus command, and other info
      save(fileName, 'data','trialMeta','stimulus','exptInfo');
+
+     daqFile
+     obj2mfile(nidaq,  )
      disp( ['.... Trial # ' num2str( trialMeta.trialNum )   ' was Saved!'] );
 
     % Online plotting of data (doesn't plot seal test trials)

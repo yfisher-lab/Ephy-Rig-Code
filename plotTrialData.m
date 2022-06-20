@@ -25,7 +25,7 @@ end
 %plot command trace
 COMMAND_SCALE = 10000;
 COMMAND_OFFSET = 50;
-plot(timeArray ,(stimulus.command * COMMAND_SCALE) - COMMAND_OFFSET ); hold on;
+plot(timeArray ,(stimulus.command.output * COMMAND_SCALE) - COMMAND_OFFSET ); hold on;
 title('Current & stimulus Command time course');
 xlabel('time(s)')
 ylabel('pA and AU');
@@ -63,15 +63,15 @@ end
 
 
 % plot Shutter data if applicable
-if(isfield( stimulus, 'shutterCommand') )
+if(isfield( stimulus, 'LEDcommand') )
     
     SCALAR_FOR_PLOTTING = 72;
 
-    plot( timeArray, SCALAR_FOR_PLOTTING*stimulus.shutterCommand, 'DisplayName','shutterCommand (high = Open)'); hold on;
+    plot( timeArray, SCALAR_FOR_PLOTTING*stimulus.LEDcommand.output, 'DisplayName','LEDcommand (high = Open)'); hold on;
 
-    title('shutter command');
+    title('LED command');
     xlabel('time(s)')
-    ylabel('Shutter open/closed');
+    ylabel('LED on/off');
 end
 
 linkaxes(ax,'x');

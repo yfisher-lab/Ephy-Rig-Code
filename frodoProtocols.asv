@@ -12,7 +12,7 @@ while 1
     GETSTIMULUSNAME = true;
     while(GETSTIMULUSNAME)
 
-        prompt = ['Which stimulus would you like to run? Options:q,step(amp,dur),stepLoop(amp,dur,reps), LEDstim(stim,isi,reps),\n' ...
+        prompt = ['Which stimulus would you like to run? Options:q,step(amp,dur),stepLoop(amp,dur,reps),\n' ...
             'noCurrent(dur),makeInjectionWaveform(InjpA,BaseDur,PulseDur,PostDur),\n' ...
             'summation(X,Y,Z,BaseDur,PulseDur,PostDur), wholeProtocol(X,Y,Z,BaseDur,PulseDur,PostDur), n=exit: '];
         % Ask user for stimulus command to run
@@ -197,22 +197,18 @@ end
 out.command = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 end
 
-%%
+%% 
 function [out] = LEDstim( stimInterval_sec, interStimInterval_sec, reps)
 ephysSettings;
 
-LEDLogical = zeros(1, interStimInterval_sec * rigSettings.sampRate); % intitial interval with LED off
+LEDLogical = [zeros(1, interStimInterval_sec * rigSettings.sampRate)]; % intitial interval with LED off
 
 for i = 1:reps
-    LEDLogical = [LEDLogical ones(1, stimInterval_sec * rigSettings.sampRate) zeros(1, interStimInterval_sec * rigSettings.sampRate)];
+    LEDlogical = [LEDlogical ones(1, stimInterval_sec * rigSettings.sampRate) zeros(1, interStimInterval_sec * rigSettings.sampRate)];
 end
 
-% LED output channel
-out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
+out = buildOutputSignal('LEDcommand',LEDlogical);
 
-% command output channel
-commandArray = zeros(1, length(LEDLogical));
-out.command = buildOutputSignal('command', commandArray);
 
 end
 
@@ -229,12 +225,11 @@ for i = 1:length(fields)
     % string of current Field
     currField = fields{i};
     % check that field is not a param struct or the name field
-    if ( ~strcmp(currField,'name') )
+    if ( ~isstruct (stimulus.(currField) )  && ~strcmp(currField,'name') )
         % plot array on figure
-        plot( stimulus.(currField).output ); hold on;
+        plot( stimulus.(currField) ); hold on;
     end
 end
-
 % adds a title with stimulus' name
 title(stimulus.name);
 end

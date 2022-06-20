@@ -64,14 +64,14 @@ if ~isdir(path)
     mkdir(path);
 end
 
-%% Run pre-expt routines (measure pipette resistance etc.)
+%% Run pre-expt routines (measure pipette resistance, seal resistance and membrane resistance and other stats and etc.)
 contAns = input('Run preExptRoutine? ','s');
 if strcmp(contAns,'y') || strcmp(contAns,'') 
     preExptData = preExptRoutine(exptInfo);
 else
     preExptData = [];
 end
-%% Save Experimental Data ( ephysSettings,genotype + and seal test +)
+%% Save Experimental Data ( ephysSettings, genotype + and seal test +)
     [~, path, ~, idString] = getDataFileName(exptInfo);
     settingsFileName = [path,idString,'exptData.mat'];
     save(settingsFileName,'rigSettings','exptInfo','preExptData'); 
