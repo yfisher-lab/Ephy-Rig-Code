@@ -52,7 +52,8 @@ ephysSettings;
 TRIAL_DURATION = 15; %seconds
 
 fprintf('Running the no injection 15 second function');
-out.command = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
+commandArray = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
+out.command = buildOutputSignal('command', commandArray);
 end
 
 %% WRITE NEW FUCNTION HERE!!! with any inputs you like and out.command as the output for current injections in voltage correctly correspoding to the external output current
@@ -71,7 +72,8 @@ Array_Base = [zeros(1,InjectionBaseSamples)]; %array Baseline values 0pA
 Array_Inj = InjpA*[ones(1,InjectionPulseSamples)]; %array Injection Voltage values ?pA
 Array_Post = [zeros(1,InjectionPostSamples)]; %array Post-injection values 0pA
 fprintf('Running the single set current injection protocol');
-out.command = [Array_Base,Array_Inj,Array_Post] * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+commandArray = [Array_Base,Array_Inj,Array_Post] * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
 end
 %% Inject step current
 function [out] = summation(X,Y,Z,BaseDur,PulseDur,PostDur) %where x,y,z is current injected and by what steps
@@ -97,7 +99,8 @@ for i = 1:length(CurrentToInject)
 end
 
 fprintf('Running the multiple current injection protocol');
-out.command = stepArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+commandArray = stepArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
 end
 
 %% Inject Step Current multiple times throughout run
@@ -143,7 +146,8 @@ for i = 1:length(CurrentToInject)
 end
 finalArray = [Array_BaselineOne stepArray Array_BaselineTwo stepArray Array_postOne stepArray Array_postTwo];
 fprintf('Running the 15-20 minute multiple current injection protocol');
-out.command = finalArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+commandArray = finalArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
 end
 
 %% noCurrent(dur)
@@ -154,7 +158,8 @@ ephysSettings;
 TRIAL_DURATION = dur; %seconds
 
 fprintf('Running the no injection 15 second function');
-out.command = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
+commandArray = zeros(1,TRIAL_DURATION*rigSettings.sampRate);
+out.command = buildOutputSignal('command', commandArray);
 end
 
 %% step
@@ -173,7 +178,8 @@ stepCommand = STEP_AMP * ones( 1, STEP_DURATION * rigSettings.sampRate );
 
 injectionCommand = [preStepCommand stepCommand];
 
-out.command = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+commandArray = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
 end
 
 %% stepLoop
@@ -194,7 +200,8 @@ for i = 1: reps
     injectionCommand = [injectionCommand preStepCommand stepCommand];
 end
 
-out.command = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+commandArray = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
 end
 
 %%
