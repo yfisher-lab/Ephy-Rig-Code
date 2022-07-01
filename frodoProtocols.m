@@ -13,7 +13,7 @@ while 1
     while(GETSTIMULUSNAME)
 
         prompt = ['Which stimulus would you like to run? Options:q,step(amp,dur),stepLoop(amp,dur,reps), LEDstim(stim,isi,reps),\n' ...
-            'noCurrent(dur),makeInjectionWaveform(InjpA,BaseDur,PulseDur,PostDur),\n' ...
+            'LEDstim_currInject_corr(stim,isi,inject,reps), noCurrent(dur),makeInjectionWaveform(InjpA,BaseDur,PulseDur,PostDur),\n' ...
             'summation(X,Y,Z,BaseDur,PulseDur,PostDur), wholeProtocol(X,Y,Z,BaseDur,PulseDur,PostDur), n=exit: '];
         % Ask user for stimulus command to run
         choosenStimulus = input( prompt, 's');
@@ -220,7 +220,34 @@ out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
 % command output channel
 commandArray = zeros(1, length(LEDLogical));
 out.command = buildOutputSignal('command', commandArray);
+end
 
+
+%%
+function [out] = LEDstim_currInject( stimInterval_sec, interStimInterval_sec, inject_pA, offsetShift_sec,  reps)
+% LEDstim_currInject
+% stimInterval_sec - amount of LED stim time 
+% interStimInterval_sec - time between stimulution
+% inject_pA - how much current to inject for same interval and cadence as
+% LED stim
+% offsetShift_sec - seconds to offset the LED and current traces 
+% by e.g. 0= correlated, 0.1 = current lags LED by 100ms
+% reps = number of times to repeat.
+ephysSettings;
+
+LEDLogical = zeros(1, interStimInterval_sec * rigSettings.sampRate); % intitial interval with LED off
+
+for i = 1:reps
+    LEDLogical = [LEDLogical ones(1, stimInterval_sec * rigSettings.sampRate) zeros(1, interStimInterval_sec * rigSettings.sampRate)];
+end
+
+% LED output channel
+out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
+
+currLogical = circshift(LEDLogical, offsetShift_sec*rigSettings.sampRate); % shift the current trace offset from the LED trace
+% command output channel
+commandArray = currLogical * inject_pA * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
 end
 
 %% 
