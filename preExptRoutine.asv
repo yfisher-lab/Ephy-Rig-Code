@@ -75,8 +75,7 @@ if strcmp(contAns,'y')
     % build command trace
     TRIAL_FRAME_NUM = rigSettings.sampRate * rigSettings.cellAttached.Dur; %make sure rigSettings.cellAttached.Dur is correct, copy-pasted from old commented out code
 
-    commandArray = zeros(1, TRIAL_FRAME_NUM);
-    stimulus.command = buildOutputSignal('command',commandArray);
+    stimulus.command = zeros(1, TRIAL_FRAME_NUM);
     stimulus.name = 'cellAttachedTrial';
 
     [data,trialMeta] = acquireTrial(stimulus,exptInfo);

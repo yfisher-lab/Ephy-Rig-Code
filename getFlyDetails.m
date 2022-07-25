@@ -32,6 +32,8 @@ h = uicontrol('Style', 'pushbutton', 'Position', [20 150 100 70]);
 uicalendar('DestinationUI', {h, 'String'});
 waitfor(h,'String'); 
 FlyData.eclosionDate = get(h,'String');
+display = append('Eclosion Date: ', FlyData.eclosionDate);
+disp(display);
 close all
 
 %% Get filename

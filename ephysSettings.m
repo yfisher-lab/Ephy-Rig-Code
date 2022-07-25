@@ -50,6 +50,10 @@ rigSettings.command.channelID = "ao0";
 rigSettings.LEDcommand.measurementType = "Digital";
 rigSettings.LEDcommand.channelID = "port0/line0";
 
+%% Added back from old code to make cell-attached spikes work in preExptRoutine
+% Cell attached Voltage Clamp measurements 
+rigSettings.cellAttached.Dur = 60; % seconds
+
 % TODO add logic for current injection with analog output and scaling
 % factors
 
