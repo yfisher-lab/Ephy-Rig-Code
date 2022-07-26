@@ -6,14 +6,16 @@ FigHand = figure('Position',[50, 50, 1800, 300]);
 set(gcf, 'Color', 'w');
 timeArray = (1  :  length(data.current) ) / rigSettings.sampRate; % seconds
 % Shade in time points when the light was on
-LEDstim =  stimulus.LEDcommand.output;
-LEDOnOffFrames = find(  diff( LEDstim ) ~= 0);
-LEDOnOffTimes = timeArray( LEDOnOffFrames );
-xcord = sort( [LEDOnOffTimes LEDOnOffTimes] );
-MIN_VOLTAGE_FOR_PLOT = -70;
+LEDstim =  stimulus.LEDcommand.out
+%shutter =  stimulus.command;
+shutterOpenCloseFrames = find(  diff( LEDstim ) ~= 0);
+shutterOpenCloseTimes = timeArray( shutterOpenCloseFrames );
+xcord = sort( [shutterOpenCloseTimes shutterOpenCloseTimes] );
+MIN_VOLTAGE_FOR_PLOT = -90;
 ycord = MIN_VOLTAGE_FOR_PLOT * repmat([0 1 1 0], 1, (length(xcord) / 4) );
 patch( xcord, ycord ,'g', 'FaceAlpha',1); hold on
-voltage = data.voltage; % for current clamp traces
+voltage = data.scaledVoltage; % for current clamp traces
+%voltage = data.voltage;
 % plot voltage trace
 plot( timeArray, voltage, 'k'); hold on;
 title('voltage');

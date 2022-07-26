@@ -9,7 +9,7 @@ while 1
     ephysSettings;
 
     % get user to pick wanted stimulus
-    GETSTIMULUSNAME = true;
+    GETSTIMULUSNAME = true; 
     while(GETSTIMULUSNAME)
 
         prompt = ['Which stimulus would you like to run? Options:q,step(amp,dur),stepLoop(amp,dur,reps), LEDstim(stim,isi,reps),\n' ...
