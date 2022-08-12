@@ -8,7 +8,7 @@
 
 %% Parameters
 
-% Data folder
+% Data folder  
 rigSettings.dataDirectory = 'C:\Users\fisherlab\Dropbox\Data\EphyData\'; % 
 
 % Device

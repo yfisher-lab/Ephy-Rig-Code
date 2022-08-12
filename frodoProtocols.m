@@ -13,7 +13,8 @@ while 1
     while(GETSTIMULUSNAME)
 
         prompt = ['Which stimulus would you like to run? Options:q,step(amp,dur),stepLoop(amp,dur,reps), LEDstim(stim,isi,reps),\n' ...
-            'LEDstim_currInject_corr(stim,isi,inject,reps), noCurrent(dur),makeInjectionWaveform(InjpA,BaseDur,PulseDur,PostDur),\n' ...
+            'LEDstim_currInject(stim,isi,inject,offset,reps), noCurrent(dur), currentSteps(lowerAmp,upperAmp), \n' ...
+            'LEDstim_offPeriod(stim,isi,reps,offPeriodStart,offPeriodDur), makeInjectionWaveform(InjpA,BaseDur,PulseDur,PostDur), \n' ...
             'summation(X,Y,Z,BaseDur,PulseDur,PostDur), wholeProtocol(X,Y,Z,BaseDur,PulseDur,PostDur), n=exit: '];
         % Ask user for stimulus command to run
         choosenStimulus = input( prompt, 's');
@@ -27,7 +28,8 @@ while 1
         catch
             if(choosenStimulus == 'n'); break; end % exit this loop if 'n' was entered and user wants to quit...
 
-            disp('ERROR: there is a problem with the stimulus command you entered, please try to enter it again :)  ');
+            disp(['ERROR: there is a problem with the stimulus comman' ...
+                'd you entered, please try to enter it again :)  ']);
         end
     end
 
@@ -249,6 +251,60 @@ currLogical = circshift(LEDLogical, offsetShift_sec*rigSettings.sampRate); % shi
 commandArray = currLogical * inject_pA * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 out.command = buildOutputSignal('command', commandArray);
 end
+
+%%
+function [] = currentSteps( lowerCurrentBound, upperCurrentBound )
+
+ephysSettings;
+INTERINTERVAL = 1; % seconds
+STEP_DURATION = 1; % seconds
+NUMBER_OF_STEPS = 10;
+stepAmplitudeChange = (upperCurrentBound - lowerCurrentBound)/(NUMBER_OF_STEPS-1); %pA
+
+injectionCommand = [];
+for i = 1: NUMBER_OF_STEPS
+    preStepCommand = zeros(1, INTERINTERVAL * rigSettings.sampRate );
+    currentStepAmplitudes = lowerCurrentBound + (stepAmplitudeChange*(i-1))
+    stepCommand = currentStepAmplitudes * ones( 1, STEP_DURATION * rigSettings.sampRate );
+    injectionCommand = [injectionCommand preStepCommand stepCommand];
+end
+
+injectionCommand = [ injectionCommand zeros(1, INTERINTERVAL * rigSettings.sampRate) ];
+
+commandArray = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
+end
+
+
+%%
+function [out] = LEDstim_offPeriod( stimInterval_sec, interStimInterval_sec, reps , offPeriodStart_sec , offPeriodDuration_min )
+ephysSettings;
+
+LEDLogical = zeros(1, interStimInterval_sec * rigSettings.sampRate); % intiial interval with LED off
+
+for i = 1:reps
+    LEDLogical = [LEDLogical ones(1, stimInterval_sec * rigSettings.sampRate) zeros(1, interStimInterval_sec * rigSettings.sampRate)];
+end
+
+offPeriodStartIndex = offPeriodStart_sec * rigSettings.sampRate;
+offPeriodEnd_sec = offPeriodStart_sec + (offPeriodDuration_min*60);
+offPeriodEndIndex = offPeriodEnd_sec * rigSettings.sampRate;
+
+if offPeriodEndIndex > length(LEDLogical)
+    warning('Off period duration is longer than whole trial');
+    return
+end
+
+LEDLogical ( offPeriodStartIndex:offPeriodEndIndex ) = 0;
+
+% LED output channel
+out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
+
+% command output channel
+commandArray = zeros(1, length(LEDLogical));
+out.command = buildOutputSignal('command', commandArray);
+end
+
 
 %% 
 function [] = plotCommandSignals( stimulus )
