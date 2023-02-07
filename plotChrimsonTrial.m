@@ -10,13 +10,14 @@ LEDstim =  stimulus.LEDcommand.output;
 LEDOnOffFrames = find(  diff( LEDstim ) ~= 0);
 LEDOnOffTimes = timeArray( LEDOnOffFrames );
 xcord = sort( [LEDOnOffTimes LEDOnOffTimes] );
-MIN_VOLTAGE_FOR_PLOT = -70;
+MIN_VOLTAGE_FOR_PLOT = -80;
 ycord = MIN_VOLTAGE_FOR_PLOT * repmat([0 1 1 0], 1, (length(xcord) / 4) );
 patch( xcord, ycord ,'g', 'FaceAlpha',1); hold on
 voltage = data.voltage; % for current clamp traces
 % plot voltage trace
 plot( timeArray, voltage, 'k'); hold on;
 title('voltage');
+ylim([ -80 0 ])
 xlabel('time(s)')
 ylabel('mV');
 box off

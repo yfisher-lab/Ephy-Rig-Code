@@ -20,6 +20,7 @@ inputResistance (MOhms) sum of access and membrane resistance (?)
 %}
 [data,trialMeta] = acquireTrial();% sample a quick trial of the seal test
 
+%%
 current = data.current;
 voltage = data.voltage;
 
@@ -113,7 +114,7 @@ ephysSettings;
 rigSettings.defaultSealTestAmplitude = 10; % mV, this is 700b multiclamp default
 
 if (rigSettings.defaultSealTestAmp-1 > sealTestAmplitude || sealTestAmplitude > rigSettings.defaultSealTestAmp+1)
-    warning('Decoded seal test value is outside of the expected default ranage, check 700b multiclamp settings' )
+    warning('Decoded seal test value is outside of the expected default range, check 700b multiclamp settings' )
 end
 
 %% Calculate accessResistance using peak current value %%

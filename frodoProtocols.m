@@ -288,6 +288,69 @@ end
 
 
 %%
+function [out] = currentStepsUp( inputResistance , endVoltage , voltageStepAmplitude , stepDuration )
+
+ephysSettings;
+VOLTS_PER_MiliVOLTS = 1e-3; % V /1000 mV
+AMPS_PER_pA = 1e-12; % 1e-12 A / 1 pA
+MEGAOHM_PER_OHM = 1e-6; % 1 MOhm / 1e6 Ohm
+
+[data,trialMeta] = acquireTrial;
+startVoltage = mean(data.voltage);
+% startVoltage = -65; %mV
+
+% inputResistance = preExptData.initialInputResistance / MEGAOHM_PER_OHM;
+% inputResistance = 542 / MEGAOHM_PER_OHM; 
+inputResistance = inputResistance / MEGAOHM_PER_OHM;
+
+voltageChange = endVoltage - startVoltage; %mV
+numSteps = floor( voltageChange / voltageStepAmplitude ) + 1;
+
+injCurrentForVoltageStep = ((voltageStepAmplitude * VOLTS_PER_MiliVOLTS) / inputResistance ) / AMPS_PER_pA; %pA
+
+injectionCommand = [];
+for i = 1: numSteps
+    currentStepAmplitudes = 0 + (injCurrentForVoltageStep*(i-1));
+    stepCommand = currentStepAmplitudes * ones( 1, stepDuration * rigSettings.sampRate );
+    injectionCommand = [injectionCommand stepCommand];
+end
+
+commandArray = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
+end
+
+%%
+function [out] = currentRamp( inputResistance , endVoltage , lengthTrialSec)
+
+ephysSettings;
+VOLTS_PER_MiliVOLTS = 1e-3; % V /1000 mV
+AMPS_PER_pA = 1e-12; % 1e-12 A / 1 pA
+MEGAOHM_PER_OHM = 1e-6; % 1 MOhm / 1e6 Ohm
+
+[data,trialMeta] = acquireTrial;
+startVoltage = mean(data.voltage);
+% startVoltage = -65; %mV
+
+% inputResistance = preExptData.initialInputResistance / MEGAOHM_PER_OHM;
+% inputResistance = 542 / MEGAOHM_PER_OHM; 
+inputResistance = inputResistance / MEGAOHM_PER_OHM;
+
+numSteps = lengthTrialSec * rigSettings.sampRate;
+injCurrentForEndVoltage = (((endVoltage - startVoltage)*VOLTS_PER_MiliVOLTS) / inputResistance) / AMPS_PER_pA; %pA
+injCurrentForVoltageStep = injCurrentForEndVoltage / numSteps;
+
+injectionCommand = [];
+for i = 1: numSteps
+    stepCommand = 0 + (injCurrentForVoltageStep*(i-1));
+    injectionCommand = [injectionCommand stepCommand];
+end
+
+commandArray = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
+end
+
+
+%%
 function [out] = LEDstim_offPeriod( stimInterval_sec, interStimInterval_sec, reps , offPeriodStart_sec , offPeriodDuration_min )
 ephysSettings;
 
