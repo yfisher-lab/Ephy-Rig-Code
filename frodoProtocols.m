@@ -117,7 +117,7 @@ out.command = buildOutputSignal('command', commandArray);
 end
 
 
-%% currentSteps -multiple current steps between two current values
+%% currentSteps -multiple current steps between two entered current bounds. Returns to 0 between each step
 function [out] = currentSteps( lowerCurrentBound, upperCurrentBound, varargin )
 
 ephysSettings;

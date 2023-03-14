@@ -81,7 +81,7 @@ contAns = input('\n Would you like to start the experiment? ','s');
 if strcmp(contAns,'y')
     fprintf('**** Running Experiment ****\n')
     
-    % run the stimlulus delivery function specified by the string of stimSetType
+    % run the stimulus delivery function specified by the string of stimSetType
     eval([stimSetType,'(','exptInfo,','preExptData',')']);
     
 end
