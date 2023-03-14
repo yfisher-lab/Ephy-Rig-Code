@@ -110,7 +110,7 @@ for i = 1: reps
     injectionCommand = [injectionCommand preStepCommand stepCommand];
 end
 
-injectionCommand = [ injectionCommand zeros(1, PRE_STEP_DURATION * rigSettings.sampRate ) ]
+injectionCommand = [ injectionCommand zeros(1, PRE_STEP_DURATION * rigSettings.sampRate ) ];
 
 commandArray = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 out.command = buildOutputSignal('command', commandArray);
@@ -182,7 +182,8 @@ commandArray = injectionCommand * rigSettings.command.currentClampExternalComman
 out.command = buildOutputSignal('command', commandArray);
 end
 
-%%
+
+%% currentRamp -gradually inject (0.1 pA steps) current to reach a certain membrane voltage. Current needed to get to voltage calculated using input resistance.
 function [out] = currentRamp( endVoltage , lengthTrialSec )
 
 ephysSettings;
@@ -190,27 +191,33 @@ VOLTS_PER_MiliVOLTS = 1e-3; % V /1000 mV
 AMPS_PER_pA = 1e-12; % 1e-12 A / 1 pA
 MEGAOHM_PER_OHM = 1e-6; % 1 MOhm / 1e6 Ohm
 
-[data,~] = acquireTrial;
-startVoltage = mean(data.voltage);
+% [data,~] = acquireTrial;
+% startVoltage = mean(data.voltage);
 % startVoltage = -65; %mV
 
 inputResistance = preExptData.initialInputResistance / MEGAOHM_PER_OHM;
 % inputResistance = 542 / MEGAOHM_PER_OHM; 
 % inputResistance = inputResistance / MEGAOHM_PER_OHM;
 
-CURRENT_STEP_AMPLITUDE = 0.1; %pA
+% CURRENT_STEP_AMPLITUDE = 0.1; %pA
+% injCurrentForEndVoltage = (((endVoltage - startVoltage)*VOLTS_PER_MiliVOLTS) / inputResistance) / AMPS_PER_pA; %pA
+% numSteps = round(injCurrentForEndVoltage / CURRENT_STEP_AMPLITUDE);
+% 
+% trialLength = lengthTrialSec * rigSettings.sampRate;
+% stepDurationFrames = floor(trialLength / numSteps);
+% 
+% injectionCommand = [];
+% for i = 1: numSteps
+%     currentStepAmplitude = CURRENT_STEP_AMPLITUDE*i;
+%     stepCommand = currentStepAmplitude * ones( 1, stepDurationFrames );
+%     injectionCommand = [ injectionCommand stepCommand ];
+% end
+
+numSteps = lengthTrialSec * rigSettings.sampRate;
 injCurrentForEndVoltage = (((endVoltage - startVoltage)*VOLTS_PER_MiliVOLTS) / inputResistance) / AMPS_PER_pA; %pA
-numSteps = round(injCurrentForEndVoltage / CURRENT_STEP_AMPLITUDE);
+injCurrentForVoltageStep = injCurrentForEndVoltage / numSteps;
 
-trialLength = lengthTrialSec * rigSettings.sampRate;
-stepDurationFrames = floor(trialLength / numSteps);
-
-injectionCommand = [];
-for i = 1: numSteps
-    currentStepAmplitude = CURRENT_STEP_AMPLITUDE*i;
-    stepCommand = currentStepAmplitude * ones( 1, stepDurationFrames );
-    injectionCommand = [ injectionCommand stepCommand ];
-end
+injectionCommand = [ 0:injCurrentForVoltageStep:injCurrentForEndVoltage ];
 
 preStepCommand = zeros(1, 30 * rigSettings.sampRate );
 injectionCommand = [ preStepCommand injectionCommand ];
@@ -293,6 +300,104 @@ out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
 
 % command output channel
 commandArray = zeros(1, length(LEDLogical));
+out.command = buildOutputSignal('command', commandArray);
+end
+
+
+%%
+function [out]= makeInjectionWaveform (InjpA,BaseDur,PulseDur,PostDur)
+%Injects Current for given Duration(s)
+ephysSettings;
+% makeInjectionWaveform function to inject current
+InjectionBaseSamples = rigSettings.sampRate*BaseDur; % Hz=samples/sec
+InjectionPulseSamples = rigSettings.sampRate*PulseDur;
+InjectionPostSamples = rigSettings.sampRate*PostDur;
+
+%Volts = ampGain*(InjpA/1000); %Voltage injection (1nA=1000pA)
+%Volts = InjpA/ampGain;
+
+Array_Base = [zeros(1,InjectionBaseSamples)]; %array Baseline values 0pA
+Array_Inj = InjpA*[ones(1,InjectionPulseSamples)]; %array Injection Voltage values ?pA
+Array_Post = [zeros(1,InjectionPostSamples)]; %array Post-injection values 0pA
+fprintf('Running the single set current injection protocol');
+commandArray = [Array_Base,Array_Inj,Array_Post] * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
+end
+
+
+%% Inject step current
+function [out] = summation(X,Y,Z,BaseDur,PulseDur,PostDur) %where x,y,z is current injected and by what steps
+% Syntax
+ephysSettings;
+InjectionBaseSamples = rigSettings.sampRate*BaseDur; % Hz=samples/sec
+InjectionPulseSamples = rigSettings.sampRate*PulseDur;
+InjectionPostSamples = rigSettings.sampRate*PostDur;
+% Initilising loop to be zero
+Voltstep = 0;
+CurrentToInject = X:Y:Z;
+stepArray = [];
+for i = 1:length(CurrentToInject)
+    % loop
+    %Voltstep = CurrentToInject(i)/ampGain;
+
+    Array_Base = [zeros(1,InjectionBaseSamples)]; %array Baseline values 0pA
+    Array_Inj = CurrentToInject(i)*[ones(1,InjectionPulseSamples)]; %array Injection Voltage values ?pA
+    Array_Post = [zeros(1,InjectionPostSamples)]; %array Post-injection values 0pA
+
+    stepArray = [stepArray, Array_Base,Array_Inj,Array_Post];
+   
+end
+
+fprintf('Running the multiple current injection protocol');
+commandArray = stepArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
+end
+
+
+%% Inject Step Current multiple times throughout run
+
+%15-20 minute run with baseline and step Current recordings; add ATP around
+%the 4 minute mark
+function [out] = wholeProtocol(X,Y,Z,BaseDur,PulseDur,PostDur) %where x,y,z is current injected and by what steps
+%BaseDur and PostDur at 60 seconds = T(2n+1) where n is sec base and T is
+%number of current injections
+% Syntax
+ephysSettings;
+%All the noCurrent baseline variables
+BaselineOne = rigSettings.sampRate*60; % Hz=samples/sec; set as 60s
+BaselineTwo = rigSettings.sampRate*180; % Hz=samples/sec; set as 120s
+postOne = rigSettings.sampRate*360; % Hz=samples/sec; set as 420 (8min)
+postTwo = rigSettings.sampRate*120; % Hz=samples/sec; set as 120s
+
+%Injection baseline variables
+InjectionBaseSamples = rigSettings.sampRate*BaseDur; % Hz=samples/sec
+InjectionPulseSamples = rigSettings.sampRate*PulseDur;
+InjectionPostSamples = rigSettings.sampRate*PostDur;
+
+%NoCurrent zeroArrays
+Array_BaselineOne = [zeros(1,BaselineOne)]; %array Baseline values 0pA
+Array_BaselineTwo = [zeros(1,BaselineTwo)]; %array Baseline values 0pA
+Array_postOne = [zeros(1,postOne)]; %array Baseline values 0pA
+Array_postTwo = [zeros(1,postTwo)]; %array Baseline values 0pA
+
+% Initialising loopBaseline to be zero
+Voltstep = 0;
+CurrentToInject = X:Y:Z;
+stepArray = [];
+for i = 1:length(CurrentToInject)
+    % loop
+    %Voltstep = CurrentToInject(i)/ampGain;
+
+    Array_Base = [zeros(1,InjectionBaseSamples)]; %array Baseline values 0pA
+    Array_Inj = CurrentToInject(i)*[ones(1,InjectionPulseSamples)]; %array Injection Voltage values ?pA
+    Array_Post = [zeros(1,InjectionPostSamples)]; %array Post-injection values 0pA
+
+    stepArray = [stepArray, Array_Base,Array_Inj,Array_Post];
+   
+end
+finalArray = [Array_BaselineOne stepArray Array_BaselineTwo stepArray Array_postOne stepArray Array_postTwo];
+fprintf('Running the 15-20 minute multiple current injection protocol');
+commandArray = finalArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 out.command = buildOutputSignal('command', commandArray);
 end
 

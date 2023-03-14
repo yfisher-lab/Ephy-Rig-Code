@@ -51,7 +51,7 @@ rigSettings.LEDcommand.measurementType = "Digital";
 rigSettings.LEDcommand.channelID = "port0/line0";
 
 % Cell attached Voltage Clamp measurements 
-rigSettings.cellAttached.Dur = 60; % seconds
+rigSettings.cellAttached.Dur = 30; % seconds
 
 % TODO add logic for current injection with analog output and scaling
 % factors

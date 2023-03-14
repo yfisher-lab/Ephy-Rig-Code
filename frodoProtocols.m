@@ -110,7 +110,7 @@ for i = 1: reps
     injectionCommand = [injectionCommand preStepCommand stepCommand];
 end
 
-injectionCommand = [ injectionCommand zeros(1, PRE_STEP_DURATION * rigSettings.sampRate ) ]
+injectionCommand = [ injectionCommand zeros(1, PRE_STEP_DURATION * rigSettings.sampRate ) ];
 
 commandArray = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 out.command = buildOutputSignal('command', commandArray);
@@ -151,22 +151,22 @@ end
 
 
 %% currentStepsUp -current steps towards a certain membrane voltage. Current needed to get to voltage calculated using input resistance.
-function [out] = currentStepsUp( endVoltage , voltageStepAmplitude , stepDuration )
+function [out] = currentStepsUp( inputResistance , startVoltage , endVoltage , voltageStepAmplitude , stepDuration )
 
 ephysSettings;
 VOLTS_PER_MiliVOLTS = 1e-3; % V /1000 mV
 AMPS_PER_pA = 1e-12; % 1e-12 A / 1 pA
 MEGAOHM_PER_OHM = 1e-6; % 1 MOhm / 1e6 Ohm
 
-[data,~] = acquireTrial;
-startVoltage = mean(data.voltage);
+% [data,~] = acquireTrial;
+% startVoltage = mean(data.voltage);
 % startVoltage = -65; %mV
 
-inputResistance = preExptData.initialInputResistance / MEGAOHM_PER_OHM;
+% inputResistance = preExptData.initialInputResistance / MEGAOHM_PER_OHM;
 % inputResistance = 542 / MEGAOHM_PER_OHM; 
-% inputResistance = inputResistance / MEGAOHM_PER_OHM;
+inputResistance = inputResistance / MEGAOHM_PER_OHM;
 
-voltageChange = endVoltage - startVoltage; %mV
+voltageChange = abs(endVoltage - startVoltage); %mV
 numSteps = floor( voltageChange / voltageStepAmplitude ) + 1;
 
 injCurrentForVoltageStep = ((voltageStepAmplitude * VOLTS_PER_MiliVOLTS) / inputResistance ) / AMPS_PER_pA; %pA
@@ -183,35 +183,41 @@ out.command = buildOutputSignal('command', commandArray);
 end
 
 
-%% currentRamp -gradually inject (0.1 pA steps) current to reach a certain membrane voltage. Current needed to get to voltage calculated using input resistance.
-function [out] = currentRamp( endVoltage , lengthTrialSec )
+%% currentRamp -gradually inject current to reach a certain membrane voltage. Current needed to get to voltage calculated using input resistance.
+function [out] = currentRamp( inputResistance , startVoltage , endVoltage , lengthTrialSec )
 
 ephysSettings;
 VOLTS_PER_MiliVOLTS = 1e-3; % V /1000 mV
 AMPS_PER_pA = 1e-12; % 1e-12 A / 1 pA
 MEGAOHM_PER_OHM = 1e-6; % 1 MOhm / 1e6 Ohm
 
-[data,~] = acquireTrial;
-startVoltage = mean(data.voltage);
+% [data,~] = acquireTrial;
+% startVoltage = mean(data.voltage);
 % startVoltage = -65; %mV
 
-inputResistance = preExptData.initialInputResistance / MEGAOHM_PER_OHM;
+% inputResistance = preExptData.initialInputResistance / MEGAOHM_PER_OHM;
 % inputResistance = 542 / MEGAOHM_PER_OHM; 
-% inputResistance = inputResistance / MEGAOHM_PER_OHM;
+inputResistance = inputResistance / MEGAOHM_PER_OHM;
 
-CURRENT_STEP_AMPLITUDE = 0.1; %pA
+% CURRENT_STEP_AMPLITUDE = 0.1; %pA
+% injCurrentForEndVoltage = (((endVoltage - startVoltage)*VOLTS_PER_MiliVOLTS) / inputResistance) / AMPS_PER_pA; %pA
+% numSteps = round(injCurrentForEndVoltage / CURRENT_STEP_AMPLITUDE);
+% 
+% trialLength = lengthTrialSec * rigSettings.sampRate;
+% stepDurationFrames = floor(trialLength / numSteps);
+% 
+% injectionCommand = [];
+% for i = 1: numSteps
+%     currentStepAmplitude = CURRENT_STEP_AMPLITUDE*i;
+%     stepCommand = currentStepAmplitude * ones( 1, stepDurationFrames );
+%     injectionCommand = [ injectionCommand stepCommand ];
+% end
+
+numSteps = lengthTrialSec * rigSettings.sampRate;
 injCurrentForEndVoltage = (((endVoltage - startVoltage)*VOLTS_PER_MiliVOLTS) / inputResistance) / AMPS_PER_pA; %pA
-numSteps = round(injCurrentForEndVoltage / CURRENT_STEP_AMPLITUDE);
+injCurrentForVoltageStep = injCurrentForEndVoltage / numSteps;
 
-trialLength = lengthTrialSec * rigSettings.sampRate;
-stepDurationFrames = floor(trialLength / numSteps);
-
-injectionCommand = [];
-for i = 1: numSteps
-    currentStepAmplitude = CURRENT_STEP_AMPLITUDE*i;
-    stepCommand = currentStepAmplitude * ones( 1, stepDurationFrames );
-    injectionCommand = [ injectionCommand stepCommand ];
-end
+injectionCommand = [ 0:injCurrentForVoltageStep:injCurrentForEndVoltage ];
 
 preStepCommand = zeros(1, 30 * rigSettings.sampRate );
 injectionCommand = [ preStepCommand injectionCommand ];
