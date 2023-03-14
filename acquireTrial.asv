@@ -84,7 +84,7 @@ rawData = readwrite(nidaq, outputMatrix);
 
 % code detects primary and secondary outputs from MultiClamp commander
 MC = MultiClamp700B();
-MC.initalize;
+% MC.initalize;
 MC.getState();
 
 primaryOutput = MC.amp_primary_out_signal;
@@ -93,8 +93,8 @@ if primaryOutput == 'Vm'
     data.voltage = rawData.Dev1_ai0 * rigSettings.voltage.softGain_mV; % convert to mV
     data.current = rawData.Dev1_ai1 * rigSettings.current.softGain_pA; % convert to pA
 else
-    data.current = rawData.Dev1_ai0 * rigSettings.current.softGain_pA; % convert to pA
     data.voltage = rawData.Dev1_ai1 * rigSettings.voltage.softGain_mV; % convert to mV
+    data.current = rawData.Dev1_ai0 * rigSettings.current.softGain_pA; % convert to pA
 end
 
 % TODO write a funciton that loop over nidaq and save all fields into a sub
