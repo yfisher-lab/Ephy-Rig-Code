@@ -83,11 +83,9 @@ rawData = readwrite(nidaq, outputMatrix);
 % data.voltage = rawData.Dev1_ai1 * rigSettings.voltage.softGain_mV; % convert to mV
 
 % code detects primary and secondary outputs from MultiClamp commander
-MC = MultiClamp700B();
-MC.initalize;
-MC.getState();
+[ampMeta] = telegraphCommander();
 
-primaryOutput = MC.amp_primary_out_signal;
+primaryOutput = ampMeta.amp_primary_out_signal;
 
 if primaryOutput == 'Vm'
     data.voltage = rawData.Dev1_ai0 * rigSettings.voltage.softGain_mV; % convert to mV
@@ -97,7 +95,7 @@ else
     data.voltage = rawData.Dev1_ai1 * rigSettings.voltage.softGain_mV; % convert to mV
 end
 
-% TODO write a funciton that loop over nidaq and save all fields into a sub
+% TODO write a function that loop over nidaq and save all fields into a sub
 % field within Stimulus.nidaq
 
 
@@ -143,8 +141,9 @@ if nargin ~= 0
         mkdir(path);
     end
     
-    % save data, stimlulus command, and other info
-     save(fileName, 'data','trialMeta','stimulus','exptInfo');
+    % save data, stimulus command, MultiClamp Commander 700B configuration, and other info
+%      save(fileName, 'data','trialMeta','stimulus','exptInfo');
+     save(fileName, 'data','trialMeta','stimulus','exptInfo','ampMeta');
      disp( ['.... Trial # ' num2str( trialMeta.trialNum )   ' was Saved!'] );
 
     % Online plotting of data (doesn't plot seal test trials)

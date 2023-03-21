@@ -80,11 +80,14 @@ if strcmp(contAns,'y')
     stimulus.name = 'cellAttachedTrial';
 
     [data,trialMeta] = acquireTrial(stimulus,exptInfo);
+    
+    % Telegraph MultiClamp Commander 700B config
+    [ampMeta] = telegraphCommander();
 
     % Save cellAttachedTrial trial, this may also be saved as trial 1 (?)
     [~, path, ~, idString] = getDataFileName(exptInfo);
     filename = [path,'\preExptTrials\',idString,'cellAttachedTrial'];
-    save(filename,'data','exptInfo','trialMeta');
+    save(filename,'data','exptInfo','trialMeta','ampMeta');
 end
 
 close all % close figures so they don't build up
