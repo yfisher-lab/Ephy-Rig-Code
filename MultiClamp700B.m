@@ -3,7 +3,7 @@ classdef MultiClamp700B < handle
     % built with code provided here: https://github.com/JaneliaSciComp/Wavesurfer
     properties (Constant)
         % Serial for the whole amplifier
-        serial_number = 00834098
+        serial_number = 00838328
         
         % Minimum version required (2019b+)
         min_version = '9.7.0'
