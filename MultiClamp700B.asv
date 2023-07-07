@@ -56,10 +56,12 @@ classdef MultiClamp700B < handle
                 error(['MATLAB version must be at least ' obj.min_version]);
             end
             
-
+            % YEF: if this really true? I think this notification is backward and
+            % it should be V-clamp [primary =Im, secondary =Vm and then
+            % I-Clamp [primary = Vm, secondary = Im ... lets check
             conf_str = ['Correct metadata and scaling requires:\n',...
                         '\tV-Clamp Primary Out = Membrane Current / Secondary Out = Membrane Potential\n',...
-                        '\tI-Clamp Primary Out = Membrane Potential / Secondary Out = Membrane Current, YEF updated message 7/2023 \n'];
+                        '\tI-Clamp Primary Out = Membrane Potential / Secondary Out = Membrane Potential\n'];
             
             fprintf(conf_str)
         end
