@@ -1,9 +1,9 @@
 classdef MultiClamp700B < handle
     % Interact with 700B using the telegraphed windows message system.
     % built with code provided here: https://github.com/JaneliaSciComp/Wavesurfer
-    properties (Constant)
+    properties %(Constant)
         % Serial for the whole amplifier
-        serial_number = 00838328
+        serial_number = 00838328 % default 
         
         % Minimum version required (2019b+)
         min_version = '9.7.0'
@@ -55,7 +55,10 @@ classdef MultiClamp700B < handle
             if verLessThan('matlab',obj.min_version)
                 error(['MATLAB version must be at least ' obj.min_version]);
             end
-
+            
+            % YEF: if this really true? I think this notification is backward and
+            % it should be V-clamp [primary =Im, secondary =Vm and then
+            % I-Clamp [primary = Vm, secondary = Im ... lets check
             conf_str = ['Correct metadata and scaling requires:\n',...
                         '\tV-Clamp Primary Out = Membrane Potential / Secondary Out = Membrane Current\n',...
                         '\tI-Clamp Primary Out = Membrane Current / Secondary Out = Membrane Potential\n'];

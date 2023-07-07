@@ -83,7 +83,7 @@ rawData = readwrite(nidaq, outputMatrix);
 % data.voltage = rawData.Dev1_ai1 * rigSettings.voltage.softGain_mV; % convert to mV
 
 % code detects primary and secondary outputs from MultiClamp commander
-[ampMeta] = telegraphCommander();
+[ampMeta] = telegraphCommander(rigSettings.ampSerialNum);
 
 primaryOutput = ampMeta.amp_primary_out_signal;
 

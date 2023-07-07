@@ -9,16 +9,14 @@
 %% Parameters
 
 % Determine which computer this code is running on
-computername = getenv('COMPUTERNAME'); % get local computer name
-SAM_RIG_COMPUTER_NAME = 'C73220K13A00062'; % string for name PC that runs "Sam" rig
+computername = getenv('COMPUTERNAME'); % get local computer name 
+SAM_RIG_COMPUTER_NAME = 'C73220K13A00062
+     ['; % string for PC on "Sam" rig]
 
-% %Can be updated if wanted
-% FRODO_RIG_COMPUTER_NAME = XXX; % string for name PC that runs "Frodo" rig
-
-if(strcmp(SAM_RIG_COMPUTER_NAME,computername))
-    rigSettings.ampSerialNum = 00838320; % Sam 700B serial number
+if(SAM_RIG_COMPUTER_NAME )
+rigSettings.ampSerialNum = '';
 else
-    rigSettings.ampSerialNum = 00838328; % Frodo 700B serial number, current dafault
+rigSettings.ampSerialNum = '';
 end
 
 
