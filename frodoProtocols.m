@@ -22,7 +22,7 @@ while 1
         try
             % evaluate stimulus contruction code and obtain the current command wave form to be used.
             stimulus = eval(choosenStimulus);
-            stimulus.name = choosenStimulus; % Also store information about the stimlulus name and waveform
+            stimulus.name = choosenStimulus; % Also store information about the stimulus name and waveform
 
             GETSTIMULUSNAME = false; % If eval ran without breaking, exit this loop and continue on with the rest of the code
         catch
@@ -133,7 +133,10 @@ else
     INTERSTIMINTERVAL = 1; % seconds
 end
 
-stepAmplitudeChange = (upperCurrentBound - lowerCurrentBound)/(NUMBER_OF_STEPS-1); %pA
+%stepAmplitudeChange = (upperCurrentBound -
+%lowerCurrentBound)/(NUMBER_OF_STEPS-1); %pA I'm not sure why there's a -1
+%to the numSteps........
+stepAmplitudeChange = (upperCurrentBound - lowerCurrentBound)/(NUMBER_OF_STEPS); %pA
 
 injectionCommand = [];
 for i = 1: NUMBER_OF_STEPS
