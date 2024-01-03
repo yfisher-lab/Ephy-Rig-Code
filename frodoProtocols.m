@@ -38,6 +38,17 @@ while 1
         break;
     end % exit whole set of code
 
+    % option to add a pulse at the beginning of the trial to measure input resistance
+    pulsePrompt = ['Do you want to include a pulse at the beginning of the trial? '];
+    pulseAns = input( pulsePrompt, 's');
+
+    if pulseAns == 'y'
+        PULSE_AMPLITUDE = -2; %pA
+        PULSE_DURATION = 0.05; %sec
+        [ pulseCommandArray ] =  currentStepPulse( PULSE_AMPLITUDE, PULSE_DURATION );
+        stimulus.command.output = [ pulseCommandArray stimulus.command.output ];
+    end
+
     % plot command, and Trigger signal that are in stimulus
     plotCommandSignals( stimulus );
 
@@ -403,6 +414,23 @@ finalArray = [Array_BaselineOne stepArray Array_BaselineTwo stepArray Array_post
 fprintf('Running the 15-20 minute multiple current injection protocol');
 commandArray = finalArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 out.command = buildOutputSignal('command', commandArray);
+end
+
+
+%%
+function [pulseCommandArray] = currentStepPulse( pulseAmp, pulseDur )
+ephysSettings;
+
+BREAK_DURATION = 0.05; %sec
+
+preStepCommand = zeros(1, BREAK_DURATION * rigSettings.sampRate );
+
+stepCommand = pulseAmp * ones( 1, pulseDur * rigSettings.sampRate );
+
+pulseCommand = [preStepCommand stepCommand preStepCommand];
+
+pulseCommandArray = pulseCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+
 end
 
 
