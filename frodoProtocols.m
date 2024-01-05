@@ -423,11 +423,11 @@ ephysSettings;
 
 BREAK_DURATION = 0.05; %sec
 
-preStepCommand = zeros(1, BREAK_DURATION * rigSettings.sampRate );
+breakStepCommand = zeros(1, BREAK_DURATION * rigSettings.sampRate );
 
 stepCommand = pulseAmp * ones( 1, pulseDur * rigSettings.sampRate );
 
-pulseCommand = [preStepCommand stepCommand preStepCommand];
+pulseCommand = [breakStepCommand stepCommand breakStepCommand];
 
 pulseCommandArray = pulseCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 
