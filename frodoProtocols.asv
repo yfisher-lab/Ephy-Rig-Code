@@ -13,8 +13,8 @@ while 1
     while(GETSTIMULUSNAME)
 
         prompt = ['Which stimulus would you like to run? Options:q,noCurrent(dur),step(amp,dur),stepLoop(amp,dur,reps),\n' ...
-            'currentSteps(lowerAmp,upperAmp,(opt:numSteps,stimDur,isi)),currentStepsUp(endVoltage,voltageStepAmplitude,stepDuration),\n' ...
-            'currentRamp(endVoltage,lengthTrialSec),LEDstim(stim,isi,reps),LEDstim_currInject(stim,isi,inject,offset,reps),\n' ...
+            'currentSteps(lowerAmp,upperAmp,(opt:numSteps,stimDur,isi)),currentStepsUp(currentStepAmplitude,stepDurationSec,numSteps),\n' ...
+            'currentRamp(endCurrent,lengthTrialSec),LEDstim(stim,isi,reps),LEDstim_currInject(stim,isi,inject,offset,reps),\n' ...
             'LEDstim_offPeriod(stim,isi,reps,offPeriodStartSec,offPeriodDurMin),n=exit: '];
         % Ask user for stimulus command to run
         choosenStimulus = input( prompt, 's');
@@ -22,7 +22,7 @@ while 1
         try
             % evaluate stimulus contruction code and obtain the current command wave form to be used.
             stimulus = eval(choosenStimulus);
-            stimulus.name = choosenStimulus; % Also store information about the stimlulus name and waveform
+            stimulus.name = choosenStimulus; % Also store information about the stimulus name and waveform
 
             GETSTIMULUSNAME = false; % If eval ran without breaking, exit this loop and continue on with the rest of the code
         catch
@@ -38,12 +38,24 @@ while 1
         break;
     end % exit whole set of code
 
+    % option to add a pulse at the beginning of the trial to measure input resistance
+    pulsePrompt = ['Do you want to include a pulse at the beginning of the trial? '];
+    pulseAns = input( pulsePrompt, 's');
+
+    if pulseAns == 'y'
+        PULSE_AMPLITUDE = -2; %pA
+        PULSE_DURATION = 0.5; %sec
+        [ pulseCommandArray ] =  currentStepPulse( PULSE_AMPLITUDE, PULSE_DURATION );
+        stimulus.command.output = [ pulseCommandArray stimulus.command.output ];
+    end
+
     % plot command, and Trigger signal that are in stimulus
     plotCommandSignals( stimulus );
 
     % Aquire a trial
     [data] = acquireTrial(stimulus, exptInfo, preExptData);
 end
+
 end
 %% Frodo ephy rig protocols functions
 %% q
@@ -72,12 +84,13 @@ out.command = buildOutputSignal('command', commandArray);
 end
 
 %% step
-function [out] = step( amp, dur )
-% step runs a quick trial with a single step of
+function [out] = step( amp, dur, offDur )
+% step runs a trial with a single step of
 % amp = amplitude of the step in pA
 % dur = durations of the step in seconds
+% offDur = duration of time before and after step
 ephysSettings;
-PRE_STEP_DURATION = 2; % seconds
+PRE_STEP_DURATION = offDur; % seconds
 STEP_DURATION = dur; % seconds
 STEP_AMP = amp; % pA
 
@@ -85,7 +98,7 @@ preStepCommand = zeros(1, PRE_STEP_DURATION * rigSettings.sampRate );
 
 stepCommand = STEP_AMP * ones( 1, STEP_DURATION * rigSettings.sampRate );
 
-injectionCommand = [preStepCommand stepCommand];
+injectionCommand = [preStepCommand stepCommand preStepCommand];
 
 commandArray = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 out.command = buildOutputSignal('command', commandArray);
@@ -133,7 +146,10 @@ else
     INTERSTIMINTERVAL = 1; % seconds
 end
 
-stepAmplitudeChange = (upperCurrentBound - lowerCurrentBound)/(NUMBER_OF_STEPS-1); %pA
+%stepAmplitudeChange = (upperCurrentBound -
+%lowerCurrentBound)/(NUMBER_OF_STEPS-1); %pA I'm not sure why there's a -1
+%to the numSteps........
+stepAmplitudeChange = (upperCurrentBound - lowerCurrentBound)/(NUMBER_OF_STEPS); %pA
 
 injectionCommand = [];
 for i = 1: NUMBER_OF_STEPS
@@ -276,6 +292,27 @@ end
 
 
 %%
+function [out] = LEDstim_break( stimInterval_sec, interStimInterval_sec, reps, breakDurSec)
+ephysSettings;
+
+LEDLogical = zeros(1, interStimInterval_sec * rigSettings.sampRate); % initial interval with LED off
+
+for i = 1:reps
+    LEDLogical = [LEDLogical ones(1, stimInterval_sec * rigSettings.sampRate) zeros(1, interStimInterval_sec * rigSettings.sampRate)];
+end
+
+offPeriod = breakDurS
+
+% LED output channel
+out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
+
+% command output channel
+commandArray = zeros(1, length(LEDLogical));
+out.command = buildOutputSignal('command', commandArray);
+end
+
+
+%%
 function [out] = LEDstim_offPeriod( stimInterval_sec, interStimInterval_sec, reps , offPeriodStart_sec , offPeriodDuration_min )
 ephysSettings;
 
@@ -400,6 +437,23 @@ finalArray = [Array_BaselineOne stepArray Array_BaselineTwo stepArray Array_post
 fprintf('Running the 15-20 minute multiple current injection protocol');
 commandArray = finalArray * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 out.command = buildOutputSignal('command', commandArray);
+end
+
+
+%%
+function [pulseCommandArray] = currentStepPulse( pulseAmp, pulseDur )
+ephysSettings;
+
+BREAK_DURATION = 0.05; %sec
+
+breakStepCommand = zeros(1, BREAK_DURATION * rigSettings.sampRate );
+
+stepCommand = pulseAmp * ones( 1, pulseDur * rigSettings.sampRate );
+
+pulseCommand = [breakStepCommand stepCommand breakStepCommand];
+
+pulseCommandArray = pulseCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+
 end
 
 

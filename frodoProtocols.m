@@ -12,10 +12,10 @@ while 1
     GETSTIMULUSNAME = true; 
     while(GETSTIMULUSNAME)
 
-        prompt = ['Which stimulus would you like to run? Options:q,noCurrent(dur),step(amp,dur),stepLoop(amp,dur,reps),\n' ...
+        prompt = ['Which stimulus would you like to run? Options:q,noCurrent(dur),step(amp,dur,offdur),stepLoop(amp,dur,reps),\n' ...
             'currentSteps(lowerAmp,upperAmp,(opt:numSteps,stimDur,isi)),currentStepsUp(currentStepAmplitude,stepDurationSec,numSteps),\n' ...
-            'currentRamp(endCurrent,lengthTrialSec),LEDstim(stim,isi,reps),LEDstim_currInject(stim,isi,inject,offset,reps),\n' ...
-            'LEDstim_offPeriod(stim,isi,reps,offPeriodStartSec,offPeriodDurMin),n=exit: '];
+            'currentRamp(endCurrent,lengthTrialSec),LEDstim(stim,isi,reps), LEDstim_break(stim,isi,reps,breakDurSec),\n' ...
+            'LEDstim_currInject(stim,isi,inject,offset,reps), LEDstim_offPeriod(stim,isi,reps,offPeriodStartSec,offPeriodDurMin),n=exit: '];
         % Ask user for stimulus command to run
         choosenStimulus = input( prompt, 's');
 
@@ -44,7 +44,7 @@ while 1
 
     if pulseAns == 'y'
         PULSE_AMPLITUDE = -2; %pA
-        PULSE_DURATION = 0.05; %sec
+        PULSE_DURATION = 0.5; %sec
         [ pulseCommandArray ] =  currentStepPulse( PULSE_AMPLITUDE, PULSE_DURATION );
         stimulus.command.output = [ pulseCommandArray stimulus.command.output ];
     end
@@ -55,6 +55,7 @@ while 1
     % Aquire a trial
     [data] = acquireTrial(stimulus, exptInfo, preExptData);
 end
+
 end
 %% Frodo ephy rig protocols functions
 %% q
@@ -83,12 +84,13 @@ out.command = buildOutputSignal('command', commandArray);
 end
 
 %% step
-function [out] = step( amp, dur )
-% step runs a quick trial with a single step of
+function [out] = step( amp, dur, offDur )
+% step runs a trial with a single step of
 % amp = amplitude of the step in pA
 % dur = durations of the step in seconds
+% offDur = duration of time before and after step
 ephysSettings;
-PRE_STEP_DURATION = 2; % seconds
+PRE_STEP_DURATION = offDur; % seconds
 STEP_DURATION = dur; % seconds
 STEP_AMP = amp; % pA
 
@@ -96,7 +98,7 @@ preStepCommand = zeros(1, PRE_STEP_DURATION * rigSettings.sampRate );
 
 stepCommand = STEP_AMP * ones( 1, STEP_DURATION * rigSettings.sampRate );
 
-injectionCommand = [preStepCommand stepCommand];
+injectionCommand = [preStepCommand stepCommand preStepCommand];
 
 commandArray = injectionCommand * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
 out.command = buildOutputSignal('command', commandArray);
@@ -285,6 +287,28 @@ out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
 currLogical = circshift(LEDLogical, offsetShift_sec*rigSettings.sampRate); % shift the current trace offset from the LED trace
 % command output channel
 commandArray = currLogical * inject_pA * rigSettings.command.currentClampExternalCommandGain; % send full command out, in Voltage for the daq to send
+out.command = buildOutputSignal('command', commandArray);
+end
+
+
+%%
+function [out] = LEDstim_break( stimInterval_sec, interStimInterval_sec, reps, breakDurSec)
+ephysSettings;
+
+LEDLogical = zeros(1, interStimInterval_sec * rigSettings.sampRate); % initial interval with LED off
+
+for i = 1:reps
+    LEDLogical = [LEDLogical ones(1, stimInterval_sec * rigSettings.sampRate) zeros(1, interStimInterval_sec * rigSettings.sampRate)];
+end
+
+offPeriod = zeros(1,breakDurSec*rigSettings.sampRate);
+LEDLogical = [LEDLogical offPeriod];
+
+% LED output channel
+out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
+
+% command output channel
+commandArray = zeros(1, length(LEDLogical));
 out.command = buildOutputSignal('command', commandArray);
 end
 

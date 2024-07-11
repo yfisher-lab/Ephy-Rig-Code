@@ -1,4 +1,3 @@
-
 function [fullFileName, path, trialNum, idString] = getDataFileName(exptInfo)
 %GETDATAFILENAME
 %   [fullFileName, path] =  getDataFileName(prefixCode, expNum)
