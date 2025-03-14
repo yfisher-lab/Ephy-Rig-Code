@@ -13,11 +13,9 @@ xcord = sort( [LEDOnOffTimes LEDOnOffTimes] );
 MIN_VOLTAGE_FOR_PLOT = -150;
 ycord = MIN_VOLTAGE_FOR_PLOT * repmat([0 1 1 0], 1, (length(xcord) / 4) );
 patch( xcord, ycord ,'g', 'FaceAlpha',1); hold on
-%voltage = data.voltage; % for current clamp traces
-lowPassVoltage = lowPassFilter(data.voltage, 1000, rigSettings.sampRate);
+voltage = data.voltage; % for current clamp traces
 % plot voltage trace
-% plot( timeArray, voltage, 'k'); hold on;
-plot( timeArray, lowPassVoltage, 'k'); hold on;
+plot( timeArray, voltage, 'k'); hold on;
 title('voltage');
 ylim([ -80 0 ])
 xlabel('time(s)')
