@@ -12,10 +12,11 @@ while 1
     GETSTIMULUSNAME = true; 
     while(GETSTIMULUSNAME)
 
-        prompt = ['Which stimulus would you like to run? Options:q,noCurrent(dur),step(amp,dur,offdur),stepLoop(amp,dur,reps),\n' ...
-            'currentSteps(lowerAmp,upperAmp,(opt:numSteps,stimDur,isi)),currentStepsUp(currentStepAmplitude,stepDurationSec,numSteps),\n' ...
-            'currentRamp(endCurrent,lengthTrialSec),LEDstim(stim,isi,reps), LEDstim_break(stim,isi,reps,breakDurSec),\n' ...
-            'LEDstim_currInject(stim,isi,inject,offset,reps), LEDstim_offPeriod(stim,isi,reps,offPeriodStartSec,offPeriodDurMin),n=exit: '];
+        prompt = ['Which stimulus would you like to run? Options:q,noCurrent(dur),step(amp,dur,offdur),\n' ...
+            'stepLoop(amp,dur,ISIdur,reps), currentSteps(lowerAmp,upperAmp,(opt:numSteps,stimDur,isi)),\n' ...
+            'currentStepsUp(currentStepAmplitude,stepDurationSec,numSteps), currentRamp(endCurrent,lengthTrialSec),\n' ...
+            'LEDstim(stim,isi,reps), LEDstim_break(stim,isi,reps,breakDurSec), LEDstim_currInject(stim,isi,inject,offset,reps),\n' ...
+            'LEDstim_offPeriod(stim,isi,reps,offPeriodStartSec,offPeriodDurMin),n=exit: '];
         % Ask user for stimulus command to run
         choosenStimulus = input( prompt, 's');
 
@@ -40,12 +41,12 @@ while 1
 
     % option to add a pulse at the beginning of the trial to measure input resistance
     pulsePrompt = ['Do you want to include a pulse at the beginning of the trial? '];
-    pulseAns = input( pulsePrompt, 's');
+    exptInfo.pulse.ans = input( pulsePrompt, 's');
 
-    if pulseAns == 'y'
-        PULSE_AMPLITUDE = -2; %pA
-        PULSE_DURATION = 0.5; %sec
-        [ pulseCommandArray ] =  currentStepPulse( PULSE_AMPLITUDE, PULSE_DURATION );
+    if exptInfo.pulse.ans == 'y'
+        exptInfo.pulse.AMPLITUDE = -5; %pA
+        exptInfo.pulse.DURATION = 0.5; %sec
+        [ pulseCommandArray ] =  currentStepPulse( exptInfo.pulse.AMPLITUDE, exptInfo.pulse.DURATION );
         stimulus.command.output = [ pulseCommandArray stimulus.command.output ];
     end
 
@@ -106,13 +107,13 @@ end
 
 
 %% stepLoop -multiple current steps at the same amplitude
-function [out] = stepLoop ( amp, dur, reps )
+function [out] = stepLoop ( amp, dur, ISIdur, reps )
 % step runs a quick trial with a single step of
 % amp = amplitude of the step in pA
 % dur = durations of the step in seconds
 % for as many times as is specified in reps
 ephysSettings;
-PRE_STEP_DURATION = 2; % seconds
+PRE_STEP_DURATION = ISIdur; % seconds
 STEP_DURATION = dur; % seconds
 STEP_AMP = amp; % pA
 
@@ -312,6 +313,63 @@ commandArray = zeros(1, length(LEDLogical));
 out.command = buildOutputSignal('command', commandArray);
 end
 
+%%
+function [out] = LEDPulseStim_break( stimInterval_sec, interStimInterval_sec, stimReps, interPulseInterval_sec, pulseReps, breakDurSec )
+ephysSettings;
+
+LEDLogical = zeros(1, interPulseInterval_sec * rigSettings.sampRate); % initial interval with LED off
+
+LEDPulse = [];
+for i = 1:stimReps
+    LEDPulse = [LEDPulse ones(1, stimInterval_sec * rigSettings.sampRate) zeros(1, interStimInterval_sec * rigSettings.sampRate)];
+end
+
+interPulse = [zeros(1, (interPulseInterval_sec - interStimInterval_sec) * rigSettings.sampRate)]; % exclude last ISI from LED pulse
+
+for i = 1:pulseReps
+    LEDLogical = [ LEDLogical LEDPulse interPulse ];
+end
+
+offPeriod = zeros(1,breakDurSec*rigSettings.sampRate);
+LEDLogical = [LEDLogical offPeriod];
+
+% LED output channel
+out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
+
+% command output channel
+commandArray = zeros(1, length(LEDLogical));
+out.command = buildOutputSignal('command', commandArray);
+end
+
+%%
+function [out] = LEDRandomPulseStim_break( stimInterval_sec, interStimInterval_sec, maxStimReps, interPulseInterval_sec, breakDurSec )
+ephysSettings;
+
+LEDLogical = zeros(1, round((interPulseInterval_sec - interStimInterval_sec) * rigSettings.sampRate)); % initial interval with LED off excluding LED off time from LEDstim
+
+for i = 1:maxStimReps
+    [LEDPulse(i)] = LEDstim( stimInterval_sec, interStimInterval_sec, i );
+end
+
+pulseReps = 1:1:maxStimReps;
+randomOrder = pulseReps(randperm(length(pulseReps))); 
+
+interPulse = [zeros(1, round((interPulseInterval_sec - (2*interStimInterval_sec)) * rigSettings.sampRate))]; % exclude LED off time from LEDstim
+
+for i = 1:maxStimReps
+    LEDLogical = [ LEDLogical LEDPulse(randomOrder(i)).LEDcommand.output interPulse ];
+end
+
+offPeriod = zeros(1, round((breakDurSec + interStimInterval_sec)*rigSettings.sampRate)); % add back excluded LED off time from LEDstim
+LEDLogical = [LEDLogical offPeriod];
+
+% LED output channel
+out.LEDcommand = buildOutputSignal('LEDcommand',LEDLogical);
+
+% command output channel
+commandArray = zeros(1, length(LEDLogical));
+out.command = buildOutputSignal('command', commandArray);
+end
 
 %%
 function [out] = LEDstim_offPeriod( stimInterval_sec, interStimInterval_sec, reps , offPeriodStart_sec , offPeriodDuration_min )
@@ -471,7 +529,7 @@ for i = 1:length(fields)
     % string of current Field
     currField = fields{i};
     % check that field is not a param struct or the name field
-    if ( ~strcmp(currField,'name') )
+    if (~strcmp(currField,'name')) %&& (~strcmp(currField,'pulse'))
         % plot array on figure
         plot( stimulus.(currField).output ); hold on;
     end
